@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>CertiTrack</title>
+    <title>Student page</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
     <style>
         body {
@@ -52,22 +52,23 @@
         <button onclick="connectContract()">CONNECT TO CONTRACT</button>
         <p id="contractArea">Status: Not connected to Contract</p>
 
+        <div id="nftInfoArea"></div>
+
     </div>
 
     <div id="writeArea"><!-- WRITING TO CONTRACT -->
+        <button onclick="getNFTInfo()">Show NFT for Address</button><br>
+        <input type="text" id="addressInput" placeholder="Enter Wallet Address"><br>
 
-        <button onclick="mintToken()">MINT TOKEN</button><br>
-             <input type="text" id="mintAddressInput" placeholder="Enter Address"><br>
-             <input type="number" id="tokenIdInput" placeholder="Enter Token ID"><br>
-             <input type="text" id="tokenUriInput" placeholder="Enter Token URI">
+        <!-- Display NFT info function -->
 
-        <!-- CAlling the mint function -->
+        
     </div>
 
-    <div style="position: absolute; top: 10px; right: 10px;">
-        <button onclick="window.location.href = '/student';">Go to Student page</button>
-    </div>
     
+    <div style="position: absolute; top: 10px; right: 10px;">
+        <button onclick="window.location.href = '/'';">Go to Home page</button>
+    </div>
 
     <script> // the below script code is convention in web3 in forming the communication with Web
 
@@ -513,7 +514,7 @@
                 }
             ]
                 ;
-        const Address = "0x1324f1282acfa4634e3133882a4cb6db224cb0d2"; // Taking Address from Remix 
+            const Address = "0x1324f1282acfa4634e3133882a4cb6db224cb0d2"; // Taking Address from Remix 
             window.web3 = await new Web3(window.ethereum);
             window.contract = await new window.web3.eth.Contract(ABI, Address);
             document.getElementById("contractArea").innerHTML = "Connected to Contract"; // calling the elementID above
@@ -524,29 +525,20 @@
             document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
         }
 
-        const mintToken = async () => {
-            const addressInput = document.getElementById("mintAddressInput");
-            const tokenIdInput = document.getElementById("tokenIdInput");
-            const tokenUriInput = document.getElementById("tokenUriInput");
 
-            if (addressInput.value && tokenIdInput.value && tokenUriInput.value) {
-                const address = addressInput.value;
-                const tokenId = tokenIdInput.value;
-                const tokenUri = tokenUriInput.value;
+        const getNFTInfo = async () => {
+            const address = document.getElementById("addressInput").value;
+            const tokenId = 11; // Assuming the token ID is 11 for this example
 
-                try {
-                    await contract.methods.mint(address, tokenId, tokenUri).send({ from: account });
-                    alert("Token minted successfully!");
-                    addressInput.value = "";
-                    tokenIdInput.value = "";
-                    tokenUriInput.value = "";
-                } catch (error) {
-                    alert("Error occurred while minting token:", error);
-                }
-            } else {
-                alert("Please enter all minting details!");
-            }
-        };
+            const tokenUri = await window.contract.methods.tokenURI(tokenId).call({ from: address });
+
+            // Displaying the information on the page
+            const nftInfoArea = document.getElementById("nftInfoArea");
+            nftInfoArea.innerHTML = `
+        <p>Token ID: ${tokenId}</p>
+        <p>Token URI: ${tokenUri}</p>
+    `;
+        }
 
     </script>
 

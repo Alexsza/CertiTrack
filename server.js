@@ -7,6 +7,11 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname + "/index.html"));
 })
 
+app.get("/student", (req, res) => {
+    res.sendFile(path.join(__dirname + "/student.html"));
+})
+
+
 // serving the index.html file 
 
 const server = app.listen(5000);
