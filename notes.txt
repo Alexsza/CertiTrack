@@ -1,0 +1,11 @@
+Get Transactions.sol Ready 
+
+Connect Ganache to Metamask 
+
+Terminal - npm install express --save
+
+Create Files index.html / server.js
+
+New File Transactions.sol 
+
+Update Server.js 
