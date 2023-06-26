@@ -14,7 +14,7 @@
         }
 
         button {
-            background-color: rgb(78,47,94);
+            background-color: rgb(78, 47, 94);
             font-size: 33px;
             padding: 5px;
             font-family: Impact;
@@ -56,18 +56,16 @@
 
     </div>
 
-    <div id="writeArea"><!-- WRITING TO CONTRACT -->
-        <button onclick="getNFTInfo()">Show NFT for Address</button><br>
-        <input type="text" id="addressInput" placeholder="Enter Wallet Address"><br>
+    <div id="writeArea">
+        <button onclick="getNFTInfo()">Show NFT for Student ID: </button><br>
+        <p id="addressInput"> Status: NFT request not sent<br>
 
-        <!-- Display NFT info function -->
 
-        
     </div>
 
-    
+
     <div style="position: absolute; top: 10px; right: 10px;">
-        <button onclick="window.location.href = '/'';">Go to Home page</button>
+        <button onclick="window.location.href = '/';">Go to Home page</button>
     </div>
 
     <script> // the below script code is convention in web3 in forming the communication with Web
@@ -518,6 +516,8 @@
             window.web3 = await new Web3(window.ethereum);
             window.contract = await new window.web3.eth.Contract(ABI, Address);
             document.getElementById("contractArea").innerHTML = "Connected to Contract"; // calling the elementID above
+
+            return contract;
         }
 
         const getContractAccount = async () => {
@@ -527,19 +527,77 @@
 
 
         const getNFTInfo = async () => {
-            const address = document.getElementById("addressInput").value;
-            const tokenId = 11; // Assuming the token ID is 11 for this example
+      
+            const studentId = parseInt(prompt("Enter your studentID not including the 'x' \n (i.e. x22334455 - enter 22334455):")); // Prompt the user to enter their student ID
+            console.log("Entered Token ID:", studentId);
 
-            const tokenUri = await window.contract.methods.tokenURI(tokenId).call({ from: address });
+            const tokenOwner = await window.contract.methods.ownerOf(studentId).call();
+            console.log("Owner of Token:", tokenOwner);
 
-            // Displaying the information on the page
-            const nftInfoArea = document.getElementById("nftInfoArea");
-            nftInfoArea.innerHTML = `
-        <p>Token ID: ${tokenId}</p>
-        <p>Token URI: ${tokenUri}</p>
-    `;
+            if (tokenOwner.toLowerCase() !== account.toLowerCase()) {
+                console.log("This token is not associated with the current account.");
+
+                const nftInfoArea = document.getElementById("nftInfoArea");
+                nftInfoArea.innerHTML = "<p>This token is not associated with the current account.</p>";
+            } else {
+                const tokenUri = await window.contract.methods.tokenURI(studentId).call({ from: account });
+                console.log("Token URI:", tokenUri);
+
+                if (tokenUri !== null) {
+                    const nftInfoArea = document.getElementById("nftInfoArea");
+                    nftInfoArea.innerHTML = `
+                <p>Token ID: ${studentId}</p>
+                <p>Token Owner: ${tokenOwner}</p>
+                <p>Token URI: ${tokenUri}</p>
+            `;
+                } else {
+                    console.log("No token found for the specified account.");
+
+                    const nftInfoArea = document.getElementById("nftInfoArea");
+                    nftInfoArea.innerHTML = "<p>No token found for the specified account.</p>";
+                }
+            }
+        };
+
+
+        /*
+        //initial token display with specific token id
+           const tokenId = 11; // Assuming the token ID is 11 for this example
+
+           const tokenUri = await window.contract.methods.tokenURI(tokenId).call({ from: tokenOwner });
+
+           // Displaying the information on the page
+           const nftInfoArea = document.getElementById("nftInfoArea");
+           nftInfoArea.innerHTML = `
+       <p>Token ID: ${tokenId}</p>
+       <p>Token Owner: ${tokenOwner}</p>
+       <p>Token URI: ${tokenUri}</p>
+   `;
+       }
+       */
+/*
+       //trying to find token id based on account addres (tokenOwner) - not working
+        const getTokenIdByOwner = async (account) => {
+            let tokenId = null;
+            let i = 1;
+
+            while (true) {
+                try {
+                    const tokenOwner = await window.contract.methods.ownerOf(i).call();
+                    if (tokenOwner.toLowerCase() === account.toLowerCase()) {
+                        tokenId = i;
+                        break;
+                    }
+                    i++;
+                } catch (error) {
+                    // If an error occurs, it means there are no more tokens to check
+                    break;
+                }
+            }
+
+            return tokenId;
         }
-
+*/
     </script>
 
 </body>

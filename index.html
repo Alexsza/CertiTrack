@@ -4,6 +4,10 @@
 <head>
     <title>CertiTrack</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+    <script type="text/javascript" src="contract.js"></script>
+
+   
+
     <style>
         body {
             background-color: rgb(237, 235, 235);
@@ -14,7 +18,7 @@
         }
 
         button {
-            background-color: rgb(78,47,94);
+            background-color: rgb(78, 47, 94);
             font-size: 33px;
             padding: 5px;
             font-family: Impact;
@@ -57,9 +61,9 @@
     <div id="writeArea"><!-- WRITING TO CONTRACT -->
 
         <button onclick="mintToken()">MINT TOKEN</button><br>
-             <input type="text" id="mintAddressInput" placeholder="Enter Address"><br>
-             <input type="number" id="tokenIdInput" placeholder="Enter Token ID"><br>
-             <input type="text" id="tokenUriInput" placeholder="Enter Token URI">
+        <input type="text" id="mintAddressInput" placeholder="Enter Address"><br>
+        <input type="number" id="tokenIdInput" placeholder="Enter Token ID"><br>
+        <input type="text" id="tokenUriInput" placeholder="Enter Token URI">
 
         <!-- CAlling the mint function -->
     </div>
@@ -67,7 +71,6 @@
     <div style="position: absolute; top: 10px; right: 10px;">
         <button onclick="window.location.href = '/student';">Go to Student page</button>
     </div>
-    
 
     <script> // the below script code is convention in web3 in forming the communication with Web
 
@@ -513,11 +516,13 @@
                 }
             ]
                 ;
-        const Address = "0x1324f1282acfa4634e3133882a4cb6db224cb0d2"; // Taking Address from Remix 
+            const Address = "0x1324f1282acfa4634e3133882a4cb6db224cb0d2"; // Taking Address from Remix 
             window.web3 = await new Web3(window.ethereum);
             window.contract = await new window.web3.eth.Contract(ABI, Address);
             document.getElementById("contractArea").innerHTML = "Connected to Contract"; // calling the elementID above
         }
+
+        
 
         const getContractAccount = async () => {
             const data = await window.contract.methods.getAddress().call();
