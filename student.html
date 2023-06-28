@@ -10,11 +10,12 @@
             font-family: tahoma;
             font-size: 33px;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+            align-items: center;
         }
 
         button {
-            background-color: rgb(78, 47, 94);
+            background-color: rgb(75, 192, 104);
             font-size: 33px;
             padding: 5px;
             font-family: Impact;
@@ -29,7 +30,9 @@
         }
 
         #readArea {
-            flex-basis: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         #writeArea {
@@ -37,12 +40,21 @@
         }
 
         button:hover {
-            background-color: rgb(255, 0, 0);
+            background-color: rgb(198, 234, 55);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 60px;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
+    <div>
+        <h1>Student page</h1>
+    </div>
 
     <div id="readArea"> <!-- READING FROM CONTRACT -->
         <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
@@ -52,17 +64,12 @@
         <button onclick="connectContract()">CONNECT TO CONTRACT</button>
         <p id="contractArea">Status: Not connected to Contract</p>
 
-        <div id="nftInfoArea"></div>
-
     </div>
 
     <div id="writeArea">
         <button onclick="getNFTInfo()">Show NFT for Student ID: </button><br>
-        <p id="addressInput"> Status: NFT request not sent<br>
-
-
     </div>
-
+    <div id="nftInfoArea"></div>
 
     <div style="position: absolute; top: 10px; right: 10px;">
         <button onclick="window.location.href = '/';">Go to Home page</button>
@@ -137,6 +144,37 @@
                         {
                             "indexed": true,
                             "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "string",
+                            "name": "_uri",
+                            "type": "string"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "_timestamp",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "MintEvent",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "internalType": "address",
                             "name": "previousOwner",
                             "type": "address"
                         },
@@ -189,6 +227,19 @@
                         }
                     ],
                     "name": "approve",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "burn",
                     "outputs": [],
                     "stateMutability": "nonpayable",
                     "type": "function"
@@ -381,6 +432,44 @@
                     "inputs": [
                         {
                             "internalType": "address",
+                            "name": "_recipient",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "getTokenByRecipient",
+                    "outputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "getTokenRecipient",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
                             "name": "_owner",
                             "type": "address"
                         },
@@ -509,10 +598,23 @@
                     ],
                     "stateMutability": "view",
                     "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "totalSupply",
+                    "outputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
                 }
             ]
                 ;
-            const Address = "0x1324f1282acfa4634e3133882a4cb6db224cb0d2"; // Taking Address from Remix 
+            const Address = "0xc6ba42c33bac47de9bf5e37d609c63a3c19b820d"; // Taking Address from Remix 
             window.web3 = await new Web3(window.ethereum);
             window.contract = await new window.web3.eth.Contract(ABI, Address);
             document.getElementById("contractArea").innerHTML = "Connected to Contract"; // calling the elementID above
@@ -527,15 +629,13 @@
 
 
         const getNFTInfo = async () => {
-      
-            const studentId = parseInt(prompt("Enter your studentID not including the 'x' \n (i.e. x22334455 - enter 22334455):")); // Prompt the user to enter their student ID
-            console.log("Entered Token ID:", studentId);
+
+            const studentId = parseInt(prompt("Enter your studentID not including the 'x' \n (i.e. x22334455 - enter 22334455):"));
 
             const tokenOwner = await window.contract.methods.ownerOf(studentId).call();
-            console.log("Owner of Token:", tokenOwner);
+
 
             if (tokenOwner.toLowerCase() !== account.toLowerCase()) {
-                console.log("This token is not associated with the current account.");
 
                 const nftInfoArea = document.getElementById("nftInfoArea");
                 nftInfoArea.innerHTML = "<p>This token is not associated with the current account.</p>";
@@ -545,11 +645,15 @@
 
                 if (tokenUri !== null) {
                     const nftInfoArea = document.getElementById("nftInfoArea");
+                    const timestamp = new Date().toLocaleString(); // Get the current timestamp
+
                     nftInfoArea.innerHTML = `
-                <p>Token ID: ${studentId}</p>
-                <p>Token Owner: ${tokenOwner}</p>
-                <p>Token URI: ${tokenUri}</p>
-            `;
+                        <p>Token ID: ${studentId}</p>
+                        <p>Token Owner: ${tokenOwner}</p>
+                        <p>Token URI: ${tokenUri}</p>
+                        <p>Timestamp: ${timestamp}</p> 
+                        <img src="${tokenUri}" alt="NFT Image">
+                    `;
                 } else {
                     console.log("No token found for the specified account.");
 
@@ -575,29 +679,29 @@
    `;
        }
        */
-/*
-       //trying to find token id based on account addres (tokenOwner) - not working
-        const getTokenIdByOwner = async (account) => {
-            let tokenId = null;
-            let i = 1;
-
-            while (true) {
-                try {
-                    const tokenOwner = await window.contract.methods.ownerOf(i).call();
-                    if (tokenOwner.toLowerCase() === account.toLowerCase()) {
-                        tokenId = i;
-                        break;
+        /*
+               //trying to find token id based on account addres (tokenOwner) - not working
+                const getTokenIdByOwner = async (account) => {
+                    let tokenId = null;
+                    let i = 1;
+        
+                    while (true) {
+                        try {
+                            const tokenOwner = await window.contract.methods.ownerOf(i).call();
+                            if (tokenOwner.toLowerCase() === account.toLowerCase()) {
+                                tokenId = i;
+                                break;
+                            }
+                            i++;
+                        } catch (error) {
+                            // If an error occurs, it means there are no more tokens to check
+                            break;
+                        }
                     }
-                    i++;
-                } catch (error) {
-                    // If an error occurs, it means there are no more tokens to check
-                    break;
+        
+                    return tokenId;
                 }
-            }
-
-            return tokenId;
-        }
-*/
+        */
     </script>
 
 </body>
