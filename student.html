@@ -4,6 +4,7 @@
 <head>
     <title>Student page</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
         body {
             background-color: rgb(237, 235, 235);
@@ -29,14 +30,19 @@
             outline: none;
         }
 
-        #readArea {
+        #leftContainer {
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex-basis: 50%;
         }
 
-        #writeArea {
-            flex-basis: 50%;
+        #rightContainer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 50vw;
+            height: 100vh;
         }
 
         button:hover {
@@ -48,29 +54,41 @@
             font-size: 60px;
             font-weight: bold;
         }
+
+        #nftInfoArea img {
+            max-width: 100%;
+            max-height: 100%;
+        }
     </style>
 </head>
 
 <body>
-    <div>
-        <h1>Student page</h1>
+
+    <h1>Student page</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- Left Container Content -->
+                <div id="leftContainer">
+                    <div id="readArea"> <!-- READING FROM CONTRACT -->
+                        <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
+                        <p id="userArea">Status: Not connected to Metamask</p>
+                        <!-- index html to meta-->
+
+                        <button onclick="connectContract()">CONNECT TO CONTRACT</button>
+                        <p id="contractArea">Status: Not connected to Contract</p>
+                        <button onclick="getNFTInfo()">Show NFT for Student ID: </button><br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <!-- Right Container Content -->
+                <div id="rightContainer">
+                <div id="nftInfoArea"></div>
+            </div>
+            
+        </div>
     </div>
-
-    <div id="readArea"> <!-- READING FROM CONTRACT -->
-        <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
-        <p id="userArea">Status: Not connected to Metamask</p>
-        <!-- index html to meta-->
-
-        <button onclick="connectContract()">CONNECT TO CONTRACT</button>
-        <p id="contractArea">Status: Not connected to Contract</p>
-
-    </div>
-
-    <div id="writeArea">
-        <button onclick="getNFTInfo()">Show NFT for Student ID: </button><br>
-    </div>
-    <div id="nftInfoArea"></div>
-
     <div style="position: absolute; top: 10px; right: 10px;">
         <button onclick="window.location.href = '/';">Go to Home page</button>
     </div>
@@ -622,10 +640,6 @@
             return contract;
         }
 
-        const getContractAccount = async () => {
-            const data = await window.contract.methods.getAddress().call();
-            document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
-        }
 
 
         const getNFTInfo = async () => {
@@ -649,10 +663,8 @@
 
                     nftInfoArea.innerHTML = `
                         <p>Token ID: ${studentId}</p>
-                        <p>Token Owner: ${tokenOwner}</p>
-                        <p>Token URI: ${tokenUri}</p>
                         <p>Timestamp: ${timestamp}</p> 
-                        <img src="${tokenUri}" alt="NFT Image">
+                        <img src="${tokenUri}" alt="NFT Image" style="max-width: 50%; max-height: 50%;">
                     `;
                 } else {
                     console.log("No token found for the specified account.");
