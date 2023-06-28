@@ -642,6 +642,8 @@
             const data = await window.contract.methods.getAddress().call();
             document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
         }
+
+		
 		const mintToken = async () => {
   const addressInput = document.getElementById("mintAddressInput");
   const tokenIdInput = document.getElementById("tokenIdInput");
