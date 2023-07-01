@@ -52,6 +52,34 @@
             font-size: 60px;
             font-weight: bold;
         }
+        
+#sendButton {
+    margin-left: 10px;
+}
+
+#cidContainer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#retrieveButton {
+    margin-right: 10px;
+}
+
+#cidStatusContainer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#cidStatus {
+    margin-right: 10px;
+}
+
+#generatedCID {
+    margin-top: 10px;
+}
     </style>
 </head>
 
@@ -67,11 +95,24 @@
 
         <button onclick="connectContract()">CONNECT TO CONTRACT</button>
         <p id="contractArea">Status: Not connected to Contract</p>
-
-        <input type="text" id="studentIdInput" placeholder="Enter Student ID">
-        <button onclick="sendStudentId()">Retrieve CID</button>
-        <p id="generatedCID">Generated CID: </p>
     </div>
+    <div>
+        <label for="studentIdInput">Student ID:</label>
+        <input type="text" id="studentIdInput" placeholder="Enter Student ID">
+        <button id="sendButton" onclick="sendStudentId()">Send Student Id</button>
+    </div>
+
+    <div id="cidContainer">
+        <button id="retrieveButton" onclick="retrieveCID()">Retrieve CID</button>
+        <div id="cidStatusContainer">
+            <p id="cidStatus">CID: Not retrieved</p><br>
+        </div>
+    </div>
+    <div>
+        <p id="generatedCID">Generated CID:</p>
+    </div>
+    
+
 
 
 
@@ -638,14 +679,13 @@
             return contract;
         }
 
-
         const sendStudentId = async () => {
             const studentId = document.getElementById("studentIdInput").value;
             if (studentId !== "") {
                 const response = await fetch(`/sendStudentId?studentId=${studentId}`);
                 const data = await response.json();
                 if (data.success) {
-                    retrieveCID();
+                    getCID();
                 } else {
                     alert("Error sending student ID. Please try again.");
                 }
@@ -654,17 +694,24 @@
             }
         };
 
-        const retrieveCID = async () => {
-            const response = await fetch(`/retrieveCID`);
-            const data = await response.json();
-            if (data.success) {
-                const cidStatus = document.getElementById("cidStatus");
-                const generatedCID = document.getElementById("generatedCID");
-                cidStatus.innerHTML = `CID: ${data.cid}`;
-                generatedCID.innerHTML = `Generated CID: ${data.generatedCID}`;
-            } else {
-                alert("Error retrieving CID. Please try again.");
-            }
+        const getCID = () => {
+            fetch('/get-cid')
+                .then(response => response.text())
+                .then(cid => {
+                    document.getElementById("cidStatus").innerHTML = `CID: Retrieved`;
+                    document.getElementById("generatedCID").innerHTML = `https://ipfs.io/ipfs/<cid>${cid}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching CID:', error);
+                    document.getElementById("cidStatus").innerHTML = "CID: Retrieval failed";
+                });
+        };
+
+        const retrieveCID = () => {
+            document.getElementById("cidStatus").innerHTML = "CID: Retrieving...";
+            document.getElementById("generatedCID").innerHTML = "Generated CID: ";
+
+            getCID();
         };
     </script>
 </body>
