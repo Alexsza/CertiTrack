@@ -16,31 +16,31 @@ contract Project1 is NFTokenMetadata, Ownable {
         nftSymbol = "CT";
     }
 
-function mint(
-    address _to,
-    uint256 _tokenId,
-    string calldata _uri,
-    uint256 _transferTimestamp
-) external onlyOwner {
-    super._mint(_to, _tokenId);
-    super._setTokenUri(_tokenId, _uri);
-    tokenOwners[_tokenId] = _to;
-    tokenTransferTimestamps[_tokenId] = _transferTimestamp; // Store the transfer timestamp
+    function mint(
+        address _to,
+        uint256 _tokenId,
+        string calldata _uri,
+        uint256 _transferTimestamp
+    ) external {
+        super._mint(_to, _tokenId);
+        super._setTokenUri(_tokenId, _uri);
+        tokenOwners[_tokenId] = _to;
+        tokenTransferTimestamps[_tokenId] = _transferTimestamp; // Store the transfer timestamp
 
-    emit MintEvent(_to, _tokenId, _uri, block.timestamp);
-}
+        emit MintEvent(_to, _tokenId, _uri, block.timestamp);
+    }
 
-function transfer(address _to, uint256 _tokenId) external {
-    address from = tokenOwners[_tokenId];
+    function transfer(address _to, uint256 _tokenId) external {
+        address from = tokenOwners[_tokenId];
 
-    require(from != address(0), "Token does not exist");
-    require(from == msg.sender, "Transfer not authorized");
+        require(from != address(0), "Token does not exist");
+        require(from == msg.sender, "Transfer not authorized");
 
-    tokenOwners[_tokenId] = _to;
-    tokenTransferTimestamps[_tokenId] = block.timestamp; // Update the transfer timestamp
+        tokenOwners[_tokenId] = _to;
+        tokenTransferTimestamps[_tokenId] = block.timestamp; // Update the transfer timestamp
 
-    emit TransferEvent(from, _to, _tokenId, block.timestamp);
-}
+        emit TransferEvent(from, _to, _tokenId, block.timestamp);
+    }
 
     function getTokenTransferTimestamp(uint256 _tokenId) external view returns (uint256) {
         return tokenTransferTimestamps[_tokenId];

@@ -52,40 +52,24 @@
             font-size: 60px;
             font-weight: bold;
         }
-        
-#sendButton {
-    margin-left: 10px;
-}
 
-#cidContainer {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
+        #cidContainer {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
-#retrieveButton {
-    margin-right: 10px;
-}
-
-#cidStatusContainer {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-#cidStatus {
-    margin-right: 10px;
-}
-
-#generatedCID {
-    margin-top: 10px;
-}
+        #cidStatusContainer {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 
 <body>
     <div>
-        <h1>Admin page</h1>
+        <h1>Mint the digital Diploma token</h1>
     </div>
 
     <div id="readArea"> <!-- READING FROM CONTRACT -->
@@ -102,16 +86,17 @@
         <button id="sendButton" onclick="sendStudentId()">Send Student Id</button>
     </div>
 
-    <div id="cidContainer">
-        <button id="retrieveButton" onclick="retrieveCID()">Retrieve CID</button>
-        <div id="cidStatusContainer">
-            <p id="cidStatus">CID: Not retrieved</p><br>
-        </div>
+    <div id="cidStatusContainer">
+        <p id="cidStatus">CID: Not retrieved</p>
+        <p id="generatedCID"></p>
     </div>
-    <div>
-        <p id="generatedCID">Generated CID:</p>
+
+
+    <div id="writeArea"><!-- WRITING TO CONTRACT -->
+        <button onclick="mintToken()">MINT TOKEN</button><br>
     </div>
-    
+
+
 
 
 
@@ -671,16 +656,21 @@
                 }
             ]
                 ;
-            const Address = "0x2cff00ef69e13acb102118a8e627ca9fe91cc58d"; // Taking Address from Remix 
+            const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a"; // Taking Address from Remix 
             window.web3 = await new Web3(window.ethereum);
             window.contract = await new window.web3.eth.Contract(ABI, Address);
             document.getElementById("contractArea").innerHTML = "Connected to Contract"; // calling the elementID above
-
-            return contract;
         }
 
+        const getContractAccount = async () => {
+            const data = await window.contract.methods.getAddress().call();
+            document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
+        }
+
+        let studentId;
+
         const sendStudentId = async () => {
-            const studentId = document.getElementById("studentIdInput").value;
+            studentId = document.getElementById("studentIdInput").value;
             if (studentId !== "") {
                 const response = await fetch(`/sendStudentId?studentId=${studentId}`);
                 const data = await response.json();
@@ -695,11 +685,12 @@
         };
 
         const getCID = () => {
-            fetch('/get-cid')
+            return fetch('/get-cid')
                 .then(response => response.text())
                 .then(cid => {
-                    document.getElementById("cidStatus").innerHTML = `CID: Retrieved`;
+                    document.getElementById("cidStatus").innerHTML = `CID Retrieved:  `;
                     document.getElementById("generatedCID").innerHTML = `https://ipfs.io/ipfs/<cid>${cid}`;
+                    return cid;
                 })
                 .catch(error => {
                     console.error('Error fetching CID:', error);
@@ -707,12 +698,46 @@
                 });
         };
 
-        const retrieveCID = () => {
+        const retrieveCID = async () => {
             document.getElementById("cidStatus").innerHTML = "CID: Retrieving...";
             document.getElementById("generatedCID").innerHTML = "Generated CID: ";
 
+            const cid = await getCID();
             getCID();
         };
+
+        const mintToken = async () => {
+            try {
+                const Uri = document.getElementById("generatedCID").textContent;
+                console.log("Token URI: ", Uri);
+
+                const addressInput = account;
+                console.log(addressInput);
+                const tokenIdInput = studentId;
+                console.log(tokenIdInput);
+                const tokenUriInput = Uri;
+                console.log(tokenUriInput);
+
+                if (addressInput && tokenIdInput && tokenUriInput) {
+                    const address = addressInput;
+                    const tokenId = tokenIdInput;
+                    const tokenUri = tokenUriInput;
+                    const transferTimestamp = Math.floor(Date.now() / 1000); // Get the current transfer timestamp in seconds
+
+                    await contract.methods.mint(address, tokenId, tokenUri, transferTimestamp).send({ from: account });
+                    alert("Token minted successfully!");
+                    addressInput.value = "";
+                    tokenIdInput.value = "";
+                    tokenUriInput.value = "";
+                } else {
+                    alert("Please enter all minting details!");
+                }
+            } catch (error) {
+                alert("Error occurred while minting token: " + error);
+            }
+        };
+
+
     </script>
 </body>
 

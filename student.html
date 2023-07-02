@@ -112,6 +112,7 @@
 			}
 		}
 
+
 		const connectContract = async () => {
 			const ABI = [
 				{
@@ -647,15 +648,18 @@
 					"stateMutability": "view",
 					"type": "function"
 				}
-			]
-				;
-			const Address = "0x2cff00ef69e13acb102118a8e627ca9fe91cc58d"; // Taking Address from Remix 
+			];
+			const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a"; // Taking Address from Remix 
 			window.web3 = await new Web3(window.ethereum);
 			window.contract = await new window.web3.eth.Contract(ABI, Address);
 			document.getElementById("contractArea").innerHTML = "Connected to Contract"; // calling the elementID above
-
-			return contract;
 		}
+
+		const getContractAccount = async () => {
+			const data = await window.contract.methods.getAddress().call();
+			document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
+		}
+
 
 
 		const getNFTInfo = async () => {
