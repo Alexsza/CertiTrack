@@ -4,8 +4,7 @@
 <head>
 	<title>CertiTrack</title>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
-	<script type="text/javascript" src="contract.js"></script>
-
+	<script src="https://smtpjs.com/v3/smtp.js"></script> <!-- SMTP.js library for sending emails -->
 
 
 	<style>
@@ -60,612 +59,78 @@
 		<h1>Home page</h1>
 	</div>
 
-	<div id="readArea"> <!-- READING FROM CONTRACT -->
+	<div id="readArea"> 
 		<button onclick="connectMetamask()">CONNECT TO METAMASK</button>
 		<p id="userArea">Status: Not connected to Metamask</p>
-		<!-- index html to meta-->
-
-		<button onclick="connectContract()">CONNECT TO CONTRACT</button>
-		<p id="contractArea">Status: Not connected to Contract</p>
-
 	</div>
 
-	<div id="writeArea"><!-- WRITING TO CONTRACT -->
-		<button onclick="mintToken()">MINT TOKEN</button><br>
-		<input type="text" id="mintAddressInput" placeholder="Enter Address"><br>
-		<input type="number" id="tokenIdInput" placeholder="Enter Token ID"><br>
-		<input type="text" id="tokenUriInput" placeholder="Enter Token URI">
+	<div id="writeArea">
+		<input type="text" id="studentId" placeholder="Student ID" /><br>
+		<input type="email" id="email" placeholder="Email" /><br>
+		<button onclick="requestPasscode()">Request passcode</button><br><br>
+		<input type="text" id="studentId" placeholder="Student ID" /><br>
+		<input type="text" id="passcode" placeholder="Passcode" /><br>
+		<button onclick="authenticate()">Authenticate</button><br>
+		<p id="authenticationStatus"></p>
 	</div>
-
 
 	<div style="position: absolute; top: 10px; right: 10px;">
 		<button onclick="window.location.href = '/student';" style="margin-right: 5px;">Student page</button>
 		<button onclick="window.location.href = '/admin';">Admin page</button>
 	</div>
 
-
-	<script> // the below script code is convention in web3 in forming the communication with Web
+	<script> 
 
 		let account;
+		let studentId; 
+
 		const connectMetamask = async () => {
-			if (window.ethereum !== "undefined") {
-				const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-				account = accounts[0];
-				document.getElementById("userArea").innerHTML = `User Account: ${account}`;
-			}
-		}
-
-		const connectContract = async () => {
-			const ABI = [
-				{
-					"anonymous": false,
-					"inputs": [
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_owner",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_approved",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "Approval",
-					"type": "event"
-				},
-				{
-					"anonymous": false,
-					"inputs": [
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_owner",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_operator",
-							"type": "address"
-						},
-						{
-							"indexed": false,
-							"internalType": "bool",
-							"name": "_approved",
-							"type": "bool"
-						}
-					],
-					"name": "ApprovalForAll",
-					"type": "event"
-				},
-				{
-					"anonymous": false,
-					"inputs": [
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_to",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						},
-						{
-							"indexed": false,
-							"internalType": "string",
-							"name": "_uri",
-							"type": "string"
-						},
-						{
-							"indexed": false,
-							"internalType": "uint256",
-							"name": "_mintTimestamp",
-							"type": "uint256"
-						}
-					],
-					"name": "MintEvent",
-					"type": "event"
-				},
-				{
-					"anonymous": false,
-					"inputs": [
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "previousOwner",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "newOwner",
-							"type": "address"
-						}
-					],
-					"name": "OwnershipTransferred",
-					"type": "event"
-				},
-				{
-					"anonymous": false,
-					"inputs": [
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_from",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_to",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "Transfer",
-					"type": "event"
-				},
-				{
-					"anonymous": false,
-					"inputs": [
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_from",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "address",
-							"name": "_to",
-							"type": "address"
-						},
-						{
-							"indexed": true,
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						},
-						{
-							"indexed": false,
-							"internalType": "uint256",
-							"name": "_transferTimestamp",
-							"type": "uint256"
-						}
-					],
-					"name": "TransferEvent",
-					"type": "event"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_approved",
-							"type": "address"
-						},
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "approve",
-					"outputs": [],
-					"stateMutability": "nonpayable",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_to",
-							"type": "address"
-						},
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						},
-						{
-							"internalType": "string",
-							"name": "_uri",
-							"type": "string"
-						},
-						{
-							"internalType": "uint256",
-							"name": "_transferTimestamp",
-							"type": "uint256"
-						}
-					],
-					"name": "mint",
-					"outputs": [],
-					"stateMutability": "nonpayable",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_from",
-							"type": "address"
-						},
-						{
-							"internalType": "address",
-							"name": "_to",
-							"type": "address"
-						},
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "safeTransferFrom",
-					"outputs": [],
-					"stateMutability": "nonpayable",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_from",
-							"type": "address"
-						},
-						{
-							"internalType": "address",
-							"name": "_to",
-							"type": "address"
-						},
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						},
-						{
-							"internalType": "bytes",
-							"name": "_data",
-							"type": "bytes"
-						}
-					],
-					"name": "safeTransferFrom",
-					"outputs": [],
-					"stateMutability": "nonpayable",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_operator",
-							"type": "address"
-						},
-						{
-							"internalType": "bool",
-							"name": "_approved",
-							"type": "bool"
-						}
-					],
-					"name": "setApprovalForAll",
-					"outputs": [],
-					"stateMutability": "nonpayable",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_to",
-							"type": "address"
-						},
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "transfer",
-					"outputs": [],
-					"stateMutability": "nonpayable",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_from",
-							"type": "address"
-						},
-						{
-							"internalType": "address",
-							"name": "_to",
-							"type": "address"
-						},
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "transferFrom",
-					"outputs": [],
-					"stateMutability": "nonpayable",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_newOwner",
-							"type": "address"
-						}
-					],
-					"name": "transferOwnership",
-					"outputs": [],
-					"stateMutability": "nonpayable",
-					"type": "function"
-				},
-				{
-					"inputs": [],
-					"stateMutability": "nonpayable",
-					"type": "constructor"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_owner",
-							"type": "address"
-						}
-					],
-					"name": "balanceOf",
-					"outputs": [
-						{
-							"internalType": "uint256",
-							"name": "",
-							"type": "uint256"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [],
-					"name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-					"outputs": [
-						{
-							"internalType": "string",
-							"name": "",
-							"type": "string"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "getApproved",
-					"outputs": [
-						{
-							"internalType": "address",
-							"name": "",
-							"type": "address"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "getTokenTransferTimestamp",
-					"outputs": [
-						{
-							"internalType": "uint256",
-							"name": "",
-							"type": "uint256"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "address",
-							"name": "_owner",
-							"type": "address"
-						},
-						{
-							"internalType": "address",
-							"name": "_operator",
-							"type": "address"
-						}
-					],
-					"name": "isApprovedForAll",
-					"outputs": [
-						{
-							"internalType": "bool",
-							"name": "",
-							"type": "bool"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [],
-					"name": "name",
-					"outputs": [
-						{
-							"internalType": "string",
-							"name": "_name",
-							"type": "string"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [],
-					"name": "NOT_CURRENT_OWNER",
-					"outputs": [
-						{
-							"internalType": "string",
-							"name": "",
-							"type": "string"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [],
-					"name": "owner",
-					"outputs": [
-						{
-							"internalType": "address",
-							"name": "",
-							"type": "address"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "ownerOf",
-					"outputs": [
-						{
-							"internalType": "address",
-							"name": "_owner",
-							"type": "address"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "bytes4",
-							"name": "_interfaceID",
-							"type": "bytes4"
-						}
-					],
-					"name": "supportsInterface",
-					"outputs": [
-						{
-							"internalType": "bool",
-							"name": "",
-							"type": "bool"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [],
-					"name": "symbol",
-					"outputs": [
-						{
-							"internalType": "string",
-							"name": "_symbol",
-							"type": "string"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				},
-				{
-					"inputs": [
-						{
-							"internalType": "uint256",
-							"name": "_tokenId",
-							"type": "uint256"
-						}
-					],
-					"name": "tokenURI",
-					"outputs": [
-						{
-							"internalType": "string",
-							"name": "",
-							"type": "string"
-						}
-					],
-					"stateMutability": "view",
-					"type": "function"
-				}
-			];
-			const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a"; // Taking Address from Remix 
-			window.web3 = await new Web3(window.ethereum);
-			window.contract = await new window.web3.eth.Contract(ABI, Address);
-			document.getElementById("contractArea").innerHTML = "Connected to Contract"; // calling the elementID above
-		}
-
-		const getContractAccount = async () => {
-			const data = await window.contract.methods.getAddress().call();
-			document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
-		}
-
-		const mintToken = async () => {
-			const addressInput = document.getElementById("mintAddressInput");
-			const tokenIdInput = document.getElementById("tokenIdInput");
-			const tokenUriInput = document.getElementById("tokenUriInput");
-
-			if (addressInput.value && tokenIdInput.value && tokenUriInput.value) {
-				const address = addressInput.value;
-				const tokenId = tokenIdInput.value;
-				const tokenUri = tokenUriInput.value;
-				const transferTimestamp = Math.floor(Date.now() / 1000); // Get the current transfer timestamp in seconds
-
+			if (window.ethereum && typeof window.ethereum.request === 'function') {
 				try {
-					await contract.methods.mint(address, tokenId, tokenUri, transferTimestamp).send({ from: account });
-					alert("Token minted successfully!");
-					addressInput.value = "";
-					tokenIdInput.value = "";
-					tokenUriInput.value = "";
+					const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+					account = accounts[0];
+					document.getElementById("userArea").innerHTML = `User Account: ${account}`;
 				} catch (error) {
-					alert("Error occurred while minting token:", error);
+					console.error(error);
 				}
 			} else {
-				alert("Please enter all minting details!");
+				console.error("Metamask not found");
 			}
-		};
+		}
+
+		function requestPasscode() {
+			studentId = document.getElementById("studentId").value; 
+			const email = document.getElementById("email").value;
+
+			if (studentId && email) {
+				const passcode = Math.floor(Math.random() * 10000);
+
+				sendEmail(email, passcode);
+
+				// Populate Passcode in the passcode input field for testing
+				document.getElementById("passcode").value = passcode;
+			} else {
+				document.getElementById("authenticationStatus").innerHTML = "Please enter both Student ID and Email.";
+			}
+		}
+
+		function authenticate() {
+			const passcode = document.getElementById("passcode").value;
+
+			if (passcode) {
+				// create logic for function!!!
+
+				// Redirect to minting page if authentication successfull
+				window.location.href = '/createToken';
+			} else {
+				document.getElementById("authenticationStatus").innerHTML = "Please enter the passcode.";
+			}
+		}
+
+		function sendEmail(email, passcode) {
+			// Create function to send e-mail
+			
+		}
 
 	</script>
 

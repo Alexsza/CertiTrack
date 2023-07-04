@@ -67,18 +67,15 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-6">
-				<!-- Left Container Content -->
 				<div id="leftContainer">
-					<div id="readArea"> <!-- READING FROM CONTRACT -->
+					<div id="readArea"> 
 						<button onclick="connectMetamask()">CONNECT TO METAMASK</button>
 						<p id="userArea">Status: Not connected to Metamask</p>
-						<!-- index html to meta-->
 
 						<button onclick="connectContract()">CONNECT TO CONTRACT</button>
 						<p id="contractArea">Status: Not connected to Contract</p>
 						<button onclick="getNFTInfo()">Show NFT for Student ID:</button><br>
 
-						<!-- Add a container for tokenId and timestamp -->
 						<div id="bottomInfoContainer">
 							<p id="tokenIdArea"></p>
 							<p id="transferTimestampArea"></p>
@@ -87,7 +84,6 @@
 				</div>
 			</div>
 			<div class="col-lg-6">
-				<!-- Right Container Content -->
 				<div id="rightContainer">
 					<div id="nftInfoArea"></div>
 				</div>
@@ -101,7 +97,7 @@
 	
 
 
-	<script> // the below script code is convention in web3 in forming the communication with Web
+	<script> 
 
 		let account;
 		const connectMetamask = async () => {
@@ -649,10 +645,10 @@
 					"type": "function"
 				}
 			];
-			const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a"; // Taking Address from Remix 
+			const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a"; 
 			window.web3 = await new Web3(window.ethereum);
 			window.contract = await new window.web3.eth.Contract(ABI, Address);
-			document.getElementById("contractArea").innerHTML = "Connected to Contract"; // calling the elementID above
+			document.getElementById("contractArea").innerHTML = "Connected to Contract"; 
 		}
 
 		const getContractAccount = async () => {
@@ -696,10 +692,7 @@
 			}
 		};
 
-
-
 	</script>
-
 </body>
 
 </html>

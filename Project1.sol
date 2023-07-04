@@ -25,7 +25,7 @@ contract Project1 is NFTokenMetadata, Ownable {
         super._mint(_to, _tokenId);
         super._setTokenUri(_tokenId, _uri);
         tokenOwners[_tokenId] = _to;
-        tokenTransferTimestamps[_tokenId] = _transferTimestamp; // Store the transfer timestamp
+        tokenTransferTimestamps[_tokenId] = _transferTimestamp;
 
         emit MintEvent(_to, _tokenId, _uri, block.timestamp);
     }
@@ -37,7 +37,7 @@ contract Project1 is NFTokenMetadata, Ownable {
         require(from == msg.sender, "Transfer not authorized");
 
         tokenOwners[_tokenId] = _to;
-        tokenTransferTimestamps[_tokenId] = block.timestamp; // Update the transfer timestamp
+        tokenTransferTimestamps[_tokenId] = block.timestamp; 
 
         emit TransferEvent(from, _to, _tokenId, block.timestamp);
     }

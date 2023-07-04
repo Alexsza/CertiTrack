@@ -45,7 +45,7 @@ connection.connect(function (err) {
             if (results.length > 0) {
                 var result = results[0];
     
-                var awardDate = result.awardDate; // Assuming the value is in the format: "Fri Jun 16 2023 00:00:00 GMT+0100 (Irish Standard Time)"
+                var awardDate = result.awardDate;
 var formattedDate = awardDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
 var data = {
@@ -62,7 +62,7 @@ var data = {
       return formattedDate;
     }
   },
-  dt: formattedDate // Use the formatted date
+  dt: formattedDate 
 };
 
                 fs.readFile('certificate.html', 'utf8', async function (err, template) {

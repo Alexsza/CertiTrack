@@ -430,7 +430,7 @@ const ABI = [
     }
 ]
     
-const Address = "0x1324f1282acfa4634e3133882a4cb6db224cb0d2"; // Taking Address from Remix 
+const Address = "0x1324f1282acfa4634e3133882a4cb6db224cb0d2"; 
 
 
 const connectContract = async () => {
@@ -440,6 +440,5 @@ const connectContract = async () => {
       document.getElementById("contractArea").innerHTML = "Connected to Contract";
     } catch (error) {
       console.error("Failed to connect to contract:", error);
-      // Handle any error that occurred during connection
     }
   };
