@@ -678,7 +678,7 @@
                 .then(response => response.text())
                 .then(cid => {
                     document.getElementById("cidStatus").innerHTML = `CID Retrieved:  `;
-                    document.getElementById("generatedCID").innerHTML = `https://ipfs.io/ipfs/<cid>${cid}`;
+                    document.getElementById("generatedCID").innerHTML = `https://ipfs.io/ipfs/${cid}`;
                     return cid;
                 })
                 .catch(error => {
