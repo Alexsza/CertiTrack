@@ -95,8 +95,6 @@
 		<button onclick="window.location.href = '/admin';">Admin page</button>
 	</div>
 	
-
-
 	<script> 
 
 		let account;
@@ -655,8 +653,6 @@
 			const data = await window.contract.methods.getAddress().call();
 			document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
 		}
-
-
 
 		const getNFTInfo = async () => {
 			const studentId = parseInt(prompt("Enter your studentID not including the 'x' \n (i.e. x22334455 - enter 22334455):"));

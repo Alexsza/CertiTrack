@@ -672,6 +672,7 @@
             }
         };
 
+
         const getCID = () => {
             return fetch('/get-cid')
                 .then(response => response.text())
@@ -694,6 +695,7 @@
             getCID();
         };
 
+
         const mintToken = async () => {
             try {
                 const Uri = document.getElementById("generatedCID").textContent;
@@ -710,7 +712,7 @@
                     const address = addressInput;
                     const tokenId = tokenIdInput;
                     const tokenUri = tokenUriInput;
-                    const transferTimestamp = Math.floor(Date.now() / 1000); // Get the current transfer timestamp in seconds
+                    const transferTimestamp = Math.floor(Date.now() / 1000); 
 
                     await contract.methods.mint(address, tokenId, tokenUri, transferTimestamp).send({ from: account });
                     alert("Token minted successfully!");
