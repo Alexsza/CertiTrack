@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>CertiTrack</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+	<script src="https://smtpjs.com/v3/smtp.js"></script> <!-- SMTP.js library for sending emails -->
+
+
+	<style>
+		body {
+			background-color: rgb(237, 235, 235);
+			font-family: tahoma;
+			font-size: 33px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		button {
+			background-color: rgb(181, 157, 2);
+			font-size: 33px;
+			padding: 5px;
+			font-family: Impact;
+		}
+
+		input {
+			width: 25vw;
+			height: 30px;
+			font-size: 25px;
+			font-family: tahoma;
+			outline: none;
+		}
+
+		#readArea {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		#writeArea {
+			margin-top: 20px;
+		}
+
+		button:hover {
+			background-color: rgb(239, 236, 73);
+		}
+
+		h1 {
+			text-align: center;
+			font-size: 60px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+		<h1>Home page</h1>
+	</div>
+
+	<div id="writeArea">
+		<input type="text" id="studentId" placeholder="Student ID" /><br>
+		<input type="email" id="email" placeholder="Email" /><br>
+		<button onclick="requestPasscode()">Request passcode</button><br><br>
+		<input type="text" id="studentId" placeholder="Student ID" /><br>
+		<input type="text" id="passcode" placeholder="Passcode" /><br>
+		<button onclick="authenticate()">Authenticate</button><br>
+		<p id="authenticationStatus"></p>
+	</div>
+
+	<div style="position: absolute; top: 10px; right: 10px;">
+		<button onclick="window.location.href = '/student';" style="margin-right: 5px;">Student page</button>
+		<button onclick="window.location.href = '/authenticate';" style="margin-right: 5px;">Certificate Valildation</button>
+		<button onclick="window.location.href = '/admin';">Admin page</button>
+	</div>
+
+	<script> 
+	
+		let studentId; 
+
+	
+		function requestPasscode() {
+			studentId = document.getElementById("studentId").value; 
+			const email = document.getElementById("email").value;
+
+			if (studentId && email) {
+				const passcode = Math.floor(Math.random() * 10000);
+
+				sendEmail(email, passcode);
+
+				// Populate Passcode in the passcode input field for testing
+				document.getElementById("passcode").value = passcode;
+			} else {
+				document.getElementById("authenticationStatus").innerHTML = "Please enter both Student ID and Email.";
+			}
+		}
+
+		function authenticate() {
+			const passcode = document.getElementById("passcode").value;
+
+			if (passcode) {
+				// create logic for function!!!
+
+				// Redirect to minting page if authentication successfull
+				window.location.href = '/createToken';
+			} else {
+				document.getElementById("authenticationStatus").innerHTML = "Please enter the passcode.";
+			}
+		}
+
+		function sendEmail(email, passcode) {
+			// Create function to send e-mail
+			
+		}
+
+	</script>
+
+</body>
+
+</html>

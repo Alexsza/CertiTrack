@@ -1,0 +1,23 @@
+{
+  "name": "certitrack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "ipfs-api": "^17.5.0",
+    "ipfs-http-client": "^60.0.1",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.3.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql": "^2.18.1",
+    "puppeteer": "^20.8.0"
+  }
+}
