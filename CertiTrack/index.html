@@ -58,11 +58,12 @@
               <div class="row">
                 <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
                     id="studentId" placeholder="Enter your StudentID"></div>
-                <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="email"
-                    placeholder="Enter your email..."></div>
-                <div class="col-12 col-md-3"> <button class="btn btn-primary btn-lg" onclick="requestPasscode()">Request
-                    your passcode</button></div>
-              </div>
+                <div class="col-12 col-md-9 mb-2 mb-md-0">
+                    <input class="form-control form-control-lg" type="email" id="email" placeholder="Enter your email...">
+                </div>
+                <div class="col-12 col-md-3">
+                    <button class="btn btn-primary btn-lg" onclick="requestPasscode()">Request your passcode</button>
+                </div>
             </form>
           </div>
         </div>
@@ -226,35 +227,36 @@
 
 	
 		function requestPasscode() {
-			studentId = document.getElementById("studentId").value; 
-			const email = document.getElementById("email").value;
+        studentId = document.getElementById("studentId").value;
+        const email = document.getElementById("email").value;
 
-			if (studentId && email) {
-				const passcode = Math.floor(Math.random() * 10000);
+        if (studentId && email) {
+            const passcode = Math.floor(Math.random() * 10000);
+            sendEmail(email, passcode);
 
-				sendEmail(email, passcode);
+            // Populate Passcode in the passcode input field for testing
+            document.getElementById("passcode").value = passcode;
+        } else {
+            document.getElementById("authenticationStatus").innerHTML = "Please enter both Student ID and Email.";
+        }
+    }
 
-				// Populate Passcode in the passcode input field for testing
-				document.getElementById("passcode").value = passcode;
-			} else {
-				document.getElementById("authenticationStatus").innerHTML = "Please enter both Student ID and Email.";
-			}
-		}
+    function authenticate() {
+        let passcode = document.getElementById("passcode").value; // Change 'const' to 'let' here
 
-		function authenticate() {
-			const passcode = document.getElementById("passcode").value;
-			
-			passcode = 111;
+        // Remove the assignment to a constant value after testing
+        passcode = 111;
 
-			if (passcode) {
-				// create logic for function!!!
+        if (passcode) {
+            // create logic for function!!!
 
-				// Redirect to minting page if authentication successfull
-				window.location.href = '/createToken';
-			} else {
-				document.getElementById("authenticationStatus").innerHTML = "Please enter the passcode.";
-			}
-		}
+            // Redirect to minting page if authentication successful
+            window.location.href = "/createToken"; // Use '/createToken' instead of '/student'
+        } else {
+            document.getElementById("authenticationStatus").innerHTML = "Please enter the passcode.";
+        }
+    }
+
 
 		function sendEmail(email, passcode) {
 			// Create function to send e-mail

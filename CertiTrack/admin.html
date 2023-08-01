@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>CertiTrack Admin</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
@@ -63,12 +62,12 @@
         }
     </style>
 </head>
-
 <body>
-    <div>
+   <div>
         <h1>Mint the digital Diploma token</h1>
     </div>
-
+    
+    
     <div id="readArea">
         <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
         <p id="userArea">Status: Not connected to Metamask</p>
@@ -76,20 +75,47 @@
         <button onclick="connectContract()">CONNECT TO CONTRACT</button>
         <p id="contractArea">Status: Not connected to Contract</p>
     </div>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="dataFile" accept=".xlsx, .xls, .sql">
-        <input type="submit" value="Upload">
-      </form>
-      
-   
+
+  <!-- Option to show the form fields -->
+  <button id="showFormButton">Add a single document</button>
+
+  <!-- Form for adding one document to the database -->
+  <form id="addDocumentForm" style="display: none;">
+    <label for="student_id">Student ID:</label>
+    <input type="number" name="student_id" id="student_id" required><br>
+
+    <label for="first_name">First Name:</label>
+    <input type="text" name="first_name" id="first_name" required><br>
+
+    <label for="last_name">Last Name:</label>
+    <input type="text" name="last_name" id="last_name" required><br>
+
+    <label for="course">Course:</label>
+    <input type="text" name="course" id="course" required><br>
+
+    <label for="grade">Grade:</label>
+    <input type="number" name="grade" id="grade" required><br>
+
+    <label for="awardDate">Award Date:</label>
+    <input type="date" name="awardDate" id="awardDate" required><br>
+
+    <input type="submit" value="Add Document">
+  </form>
+
+  <!-- Option to upload a file -->
+  <input type="file" id="dataFile">
+  <button id="uploadFileButton">Upload File</button>
+
+  <div id="message"></div>
+  
+  
     <div style="position: absolute; top: 10px; right: 10px;">
         <button onclick="window.location.href = '/';" style="margin-right: 5px;">Home page</button>
         <button onclick="window.location.href = '/student';">Student page</button>
     </div>
 
-    <script>
-
-        let account;
+  <script>
+          let account;
         const connectMetamask = async () => {
             if (window.ethereum !== "undefined") {
                 const accounts = await ethereum.request({ method: "eth_requestAccounts" });
@@ -645,10 +671,102 @@
             const data = await window.contract.methods.getAddress().call();
             document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
         }
+  
+  
+    const showFormButton = document.getElementById('showFormButton');
+    const addDocumentForm = document.getElementById('addDocumentForm');
+    const uploadFileButton = document.getElementById('uploadFileButton');
+    const messageDiv = document.getElementById('message');
 
-        
+    showFormButton.addEventListener('click', () => {
+      // Hide the file upload form and display the single document upload form
+      addDocumentForm.style.display = 'block';
+      uploadFileButton.style.display = 'none';
+    });
 
-    </script>
+    addDocumentForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(addDocumentForm);
+
+      const newDocument = {
+        student_id: parseInt(formData.get('student_id')),
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        course: formData.get('course'),
+        grade: parseInt(formData.get('grade')),
+        awardDate: formData.get('awardDate'),
+      };
+
+      try {
+        const response = await fetch('/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newDocument),
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data.success) {
+          // Show success message
+          messageDiv.textContent = 'Document successfully added!';
+          messageDiv.style.color = 'green';
+        } else {
+          // Show error message
+          messageDiv.textContent = 'Error adding document. Please try again.';
+          messageDiv.style.color = 'red';
+        }
+      } catch (error) {
+        console.error('Error adding document:', error);
+        // Show error message
+        messageDiv.textContent = 'Error adding document. Please try again.';
+        messageDiv.style.color = 'red';
+      }
+    });
+
+    // Function to handle file upload and database insertion from JSON or Excel file
+    async function handleFileUpload(event) {
+      const fileInput = event.target;
+      const file = fileInput.files[0];
+
+      console.log('Selected file:');
+      console.log(file);
+
+      const formData = new FormData();
+      formData.append('dataFile', file);
+
+      try {
+        const response = await fetch('/upload-file', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+        console.log('Response from server:');
+        console.log(data);
+
+        if (data.success) {
+          // Show success message
+          messageDiv.textContent = 'Data uploaded and inserted into MongoDB!';
+          messageDiv.style.color = 'green';
+        } else {
+          // Show error message
+          messageDiv.textContent = 'Error uploading data. Please try again.';
+          messageDiv.style.color = 'red';
+        }
+      } catch (error) {
+        console.error('Error uploading data:', error);
+        // Show error message
+        messageDiv.textContent = 'Error uploading data. Please try again.';
+        messageDiv.style.color = 'red';
+      }
+    }
+
+    const fileInput = document.getElementById('dataFile');
+    fileInput.addEventListener('change', handleFileUpload);
+  </script>
 </body>
-
 </html>
