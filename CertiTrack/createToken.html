@@ -86,8 +86,6 @@
         <p id="cidStatus">CID: Not retrieved</p>
         <p id="generatedCID"></p>
     </div>
-
-    <div id="writeArea">
         <button onclick="mintToken()">MINT TOKEN</button><br>
     </div>
 
@@ -644,77 +642,53 @@
                 }
             ]
                 ;
-            const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a"; 
+            const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a";
             window.web3 = await new Web3(window.ethereum);
             window.contract = await new window.web3.eth.Contract(ABI, Address);
-            document.getElementById("contractArea").innerHTML = "Connected to Contract"; 
+            document.getElementById("contractArea").innerHTML = "Connected to Contract";
         }
 
-        let studentId;
+let studentId;
+        let tokenUri;
 
         const sendStudentId = async () => {
             studentId = document.getElementById("studentIdInput").value;
             if (studentId !== "") {
-                const response = await fetch(`/sendStudentId?studentId=${studentId}`);
-                const data = await response.json();
-                if (data.success) {
-                    getCID();
-                } else {
+                try {
+                    const response = await fetch(`/sendStudentId?studentId=${studentId}`);
+                    const data = await response.json();
+                    if (data.success) {
+                        document.getElementById("cidStatus").innerHTML = `CID Retrieved: `;
+                        tokenUri = `https://gateway.ipfs.io/ipfs/${data.cid}`;
+                        document.getElementById("generatedCID").innerHTML = tokenUri;
+                    } else {
+                        console.error(data.error);
+                        alert('Error generating the certificate. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error sending student ID:', error);
                     alert("Error sending student ID. Please try again.");
                 }
             } else {
                 alert("Please enter a valid student ID.");
             }
         };
-        const getCID = () => {
-          return fetch('/get-cid')
-            .then(response => response.text())
-            .then(cid => {
-              const generatedCIDElement = document.getElementById("generatedCID");
-              if (cid) {
-                document.getElementById("cidStatus").innerHTML = `CID Retrieved: `;
-                generatedCIDElement.innerHTML = `https://ipfs.io/ipfs/${cid}`;
-              } else {
-                document.getElementById("cidStatus").innerHTML = "CID: Retrieval failed";
-                generatedCIDElement.innerHTML = "";
-              }
-              return cid;
-            })
-            .catch(error => {
-              console.error('Error fetching CID:', error);
-              document.getElementById("cidStatus").innerHTML = "CID: Retrieval failed";
-              document.getElementById("generatedCID").innerHTML = "";
-            });
-        };
-        
-        const retrieveCID = async () => {
-          document.getElementById("cidStatus").innerHTML = "CID: Retrieving...";
-          await getCID(); // Fetch CID and update the elements in getCID function
-        };
 
         const mintToken = async () => {
             try {
-                const Uri = document.getElementById("generatedCID").textContent;
-                console.log("Token URI: ", Uri);
-
-                const addressInput = account;
+                const addressInput = account; // You should define 'account' before using it
                 console.log(addressInput);
-                const tokenIdInput = studentId;
-                console.log(tokenIdInput);
-                const tokenUriInput = Uri;
-                console.log(tokenUriInput);
+                console.log(studentId);
+                console.log(tokenUri);
 
-                if (addressInput && tokenIdInput && tokenUriInput) {
+                if (addressInput && studentId && tokenUri) {
                     const address = addressInput;
-                    const tokenId = tokenIdInput;
-                    const tokenUri = tokenUriInput;
+                    const tokenId = studentId;
+                    // Remove the 'let' keyword here, as tokenUri is already declared in the global scope
                     const transferTimestamp = Math.floor(Date.now() / 1000); // Get the current transfer timestamp in seconds
 
                     await contract.methods.mint(address, tokenId, tokenUri, transferTimestamp).send({ from: account });
                     alert("Token minted successfully!");
-                    addressInput.value = "";
-                    tokenIdInput.value = "";
-                    tokenUriInput.value = "";
                 } else {
                     alert("Please enter all minting details!");
                 }

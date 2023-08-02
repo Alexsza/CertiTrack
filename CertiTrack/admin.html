@@ -66,8 +66,8 @@
    <div>
         <h1>Mint the digital Diploma token</h1>
     </div>
-    
-    
+
+
     <div id="readArea">
         <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
         <p id="userArea">Status: Not connected to Metamask</p>
@@ -107,8 +107,11 @@
   <button id="uploadFileButton">Upload File</button>
 
   <div id="message"></div>
-  
-  
+
+  <!-- Add a button or link with a specific URL to MongoDB dashboard -->
+    <a href="/mongodb-dashboard" target="_blank">Go to MongoDB Dashboard</a>
+
+
     <div style="position: absolute; top: 10px; right: 10px;">
         <button onclick="window.location.href = '/';" style="margin-right: 5px;">Home page</button>
         <button onclick="window.location.href = '/student';">Student page</button>
@@ -661,18 +664,18 @@
                 }
             ]
                 ;
-            const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a"; 
+            const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a";
             window.web3 = await new Web3(window.ethereum);
             window.contract = await new window.web3.eth.Contract(ABI, Address);
-            document.getElementById("contractArea").innerHTML = "Connected to Contract"; 
+            document.getElementById("contractArea").innerHTML = "Connected to Contract";
         }
 
         const getContractAccount = async () => {
             const data = await window.contract.methods.getAddress().call();
             document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
         }
-  
-  
+
+
     const showFormButton = document.getElementById('showFormButton');
     const addDocumentForm = document.getElementById('addDocumentForm');
     const uploadFileButton = document.getElementById('uploadFileButton');

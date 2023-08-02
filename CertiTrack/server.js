@@ -1,32 +1,141 @@
 const express = require('express');
 const path = require('path');
-const axios = require('axios');
 const ejs = require('ejs');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-const FormData = require('form-data');
-const { create } = require('ipfs-http-client');
+const IPFS = require('ipfs-http-client');
 const { MongoClient } = require('mongodb');
 const multer = require('multer');
 const XLSX = require('xlsx');
 
 const app = express();
-let ipfs;
-let cid = '';
+const ipfs = IPFS.create({
+  host: 'ipfs.infura.io',
+  port: 5001,
+  protocol: 'https',
+  headers: {
+    authorization: 'Basic ' + Buffer.from('2TDhtwr81M60VrR1qVnehNc59rY:f0b2e296fae782a0f17e7e137473d44f').toString('base64')
+  }
+});
 
-const PORT = 8080;
+const port = process.env.PORT || 3000;
 const MONGO_URI =
   "mongodb+srv://certitrackadmin:BR8OyDRjFz1IqytG@certitrackproject.83j0ojd.mongodb.net/?retryWrites=true&w=majority";
 
 const client = new MongoClient(MONGO_URI);
+let collection = null;
 
-// Configure multer for file upload
+async function connect() {
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB');
+
+    const database = client.db('certitrackproject');
+    collection = database.collection('certitrackproject');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+  }
+}
+
+connect();
+
+let studentId = 0;
+
+app.get('/sendStudentId', async (req, res) => {
+  studentId = req.query.studentId;
+  console.log('Received student ID:', studentId);
+
+  try {
+    const result = await collection.findOne({ student_id: parseInt(studentId) });
+    console.log('MongoDB query result:', result);
+
+    if (!result) {
+      console.log('No result found');
+      res.json({ success: false, message: 'No result found' });
+      return;
+    } else {
+      var awardDate = new Date(result.awardDate); // Convert the string to a Date object
+      var formattedDate = awardDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      var data = {
+        student: {
+          first_name: result.first_name,
+          last_name: result.last_name,
+        },
+        course: result.course,
+        grade: {
+          getPoints: function () {
+            return result.grade_points;
+          },
+          getAwardDate: function () {
+            return formattedDate;
+          },
+        },
+        dt: formattedDate,
+      };
+      // Read the certificate template from file
+      const templatePath = path.join(__dirname, 'uploads', 'certificate.html');
+      const template = fs.readFileSync(templatePath, 'utf8'); // Read the template from the file
+
+      // Render the certificate HTML using EJS
+      const renderedCertificate = ejs.render(template, data);
+
+      // Save the rendered HTML as a temporary file (template.html)
+      const tempFilePath = path.join(__dirname, 'uploads', 'template.html');
+      fs.writeFileSync(tempFilePath, renderedCertificate);
+
+      // Convert the HTML to PNG using Puppeteer
+      const browser = await puppeteer.launch({ headless: "new" });
+      const page = await browser.newPage();
+      await page.setContent(renderedCertificate);
+      const pngFile = path.join(__dirname, 'uploads', 'certificate.png');
+      await page.screenshot({ path: pngFile, fullPage: true });
+
+      console.log('Certificate saved as certificate.png');
+
+      // Add the PNG file to IPFS
+      const fileData = fs.readFileSync(pngFile);
+      const resultIPFS = await ipfs.add(fileData);
+      const cid = resultIPFS.cid.toString();
+
+      // Remove temporary files
+      fs.unlinkSync(tempFilePath);
+      fs.unlinkSync(pngFile);
+
+      console.log('Certificate saved to IPFS with CID:', cid);
+
+      res.json({
+        success: true,
+        cid: cid,
+        generatedCID: cid,
+      });
+
+      await browser.close();
+    }
+  } catch (error) {
+    console.error('Error fetching student data:', error);
+    res.status(500).json({ success: false, message: 'Error fetching student data' });
+  }
+});
+// Configure multer for admin file upload
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Configure Multer for certificate file uploads
+const storageCID = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const uploadCID = multer({ storageCID });
 
 // Function to handle individual file upload and database insertion
 async function handleDataUpload(req, res) {
@@ -103,58 +212,38 @@ async function handleFileUpload(req, res) {
   }
 }
 
-app.post('/upload', handleDataUpload);
-app.post('/upload-file', upload.single('dataFile'), handleFileUpload);
-
-app.listen(PORT, () => {
-  console.log(`Server running on port: ${PORT}`);
+// Endpoint for generating certificate and uploading to IPFS
+app.get('/generate-certificate', async (req, res) => {
+  // ... existing code for generating and uploading certificate ...
 });
 
-async function connect() {
-  try {
-    await client.connect();
-    console.log('Connected to MongoDB');
+// Endpoint for handling individual data upload
+app.post('/upload', handleDataUpload);
 
-    // List available databases
-    const adminDb = client.db('admin');
-    const databases = await client.db().admin().listDatabases();
-    console.log('Available Databases:');
-    console.log(databases);
+// Endpoint for handling Excel file upload
+app.post('/upload-file', upload.single('dataFile'), handleFileUpload);
 
-    // Fetch and display a sample document from the collection
-    const database = client.db('certitrackproject');
-    const collection = database.collection('certitrackproject');
-    const sampleDocument = await collection.findOne();
-    console.log('Sample Document:');
-    console.log(sampleDocument);
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-    // Do any other database operations you need here...
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-  }
-}
+app.get('/student', (req, res) => {
+  res.sendFile(path.join(__dirname, 'student.html'));
+});
 
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
 
-    app.get('/sendStudentId', async (req, res) => {
-      // ... existing code for handling student ID ...
-    });
+app.get('/createToken', (req, res) => {
+  res.sendFile(path.join(__dirname, 'createToken.html'));
+});
 
-    app.get('/', (req, res) => {
-      res.sendFile(path.join(__dirname, 'index.html'));
-    });
+app.get('/mongodb-dashboard', (req, res) => {
+  const dashboardURL = 'https://cloud.mongodb.com/v2/64a82ada32ff6b587382a697#/clusters';
+  res.redirect(dashboardURL);
+});
 
-    app.get('/student', (req, res) => {
-      res.sendFile(path.join(__dirname, 'student.html'));
-    });
-
-    app.get('/admin', (req, res) => {
-      res.sendFile(path.join(__dirname, 'admin.html'));
-    });
-
-    app.get('/createToken', (req, res) => {
-      res.sendFile(path.join(__dirname, 'createToken.html'));
-    });
-
-
-// Call the connect function to establish the MongoDB connection
-connect();
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
