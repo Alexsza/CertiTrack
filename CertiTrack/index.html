@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
     <link rel="stylesheet" href="assets/css/animate.min.css">
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
-	<script src="https://smtpjs.com/v3/smtp.js"></script> <!-- SMTP.js library for sending emails -->
 
 </head>
 
@@ -23,7 +22,7 @@
 	        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 	            <span class="navbar-toggler-icon"></span>
 	        </button>
-	
+
 	        <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	            <ul class="navbar-nav mr-auto">
 	                <li class="nav-item active">
@@ -33,13 +32,13 @@
 	                    <a class="nav-link" href="/student">Student</a>
 	                </li>
 	                <li class="nav-item">
-	                    <a class="nav-link" href="/authenticate">Validation</a>
+	                    <a class="nav-link" href="/validate">Validation</a>
 	                </li>
 	                <li class="nav-item">
 	                    <a class="nav-link" href="/admin">Admin</a>
 	                </li>
 	                <li class="nav-item">
-	                    <a class="nav-link" href="/news">News</a>
+	                    <a class="nav-link" href="/contact">Contact</a>
 	                </li>
 	            </ul>
 		     </div>
@@ -221,11 +220,11 @@
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
 
-	<script> 
-	
-		let studentId; 
+	<script>
 
-	
+		let studentId;
+
+
 		function requestPasscode() {
         studentId = document.getElementById("studentId").value;
         const email = document.getElementById("email").value;
@@ -234,8 +233,6 @@
             const passcode = Math.floor(Math.random() * 10000);
             sendEmail(email, passcode);
 
-            // Populate Passcode in the passcode input field for testing
-            document.getElementById("passcode").value = passcode;
         } else {
             document.getElementById("authenticationStatus").innerHTML = "Please enter both Student ID and Email.";
         }
@@ -244,7 +241,7 @@
     function authenticate() {
         let passcode = document.getElementById("passcode").value; // Change 'const' to 'let' here
 
-        // Remove the assignment to a constant value after testing
+        // Remove the constant value after testing
         passcode = 111;
 
         if (passcode) {
@@ -260,7 +257,7 @@
 
 		function sendEmail(email, passcode) {
 			// Create function to send e-mail
-			
+      //mailchimp?
 		}
 
 	</script>

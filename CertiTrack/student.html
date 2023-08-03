@@ -6,69 +6,46 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 	<style>
-		body {
-			background-color: rgb(237, 235, 235);
-			font-family: tahoma;
-			font-size: 33px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
 
-		button {
-			background-color: rgb(75, 192, 104);
-			font-size: 33px;
-			padding: 5px;
-			font-family: Impact;
-		}
-
-		input {
-			width: 25vw;
-			height: 30px;
-			font-size: 25px;
-			font-family: tahoma;
-			outline: none;
-		}
-
-		#leftContainer {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			flex-basis: 50%;
-		}
-
-		#rightContainer {
-			display: flex;
-			justify-content: flex-end;
-			align-items: flex-end;
-			text-align: right;
-		}
-
-		button:hover {
-			background-color: rgb(198, 234, 55);
-		}
-
-		h1 {
-			text-align: center;
-			font-size: 60px;
-			font-weight: bold;
-		}
-
-		#nftInfoArea img {
-			max-width: 100%;
-			max-height: 100%;
-		}
 	</style>
 </head>
 
 <body>
+	<nav class="navbar navbar-expand bg-light navigation-clean navbar-light">
+	    <div class="container">
+	        <a class="navbar-brand" href="#">CertiTrack</a>
+	        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	            <span class="navbar-toggler-icon"></span>
+	        </button>
+
+	        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	            <ul class="navbar-nav mr-auto">
+	                <li class="nav-item active">
+	                    <a class="nav-link" href="/">Home </a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/student">Student<span class="sr-only">(current)</span></a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/validate">Validation</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/admin">Admin</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/contact">Contact</a>
+	                </li>
+	            </ul>
+		     </div>
+	    </div>
+	</nav>
 
 	<h1>Student page</h1>
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-6">
 				<div id="leftContainer">
-					<div id="readArea"> 
+					<div id="readArea">
 						<button onclick="connectMetamask()">CONNECT TO METAMASK</button>
 						<p id="userArea">Status: Not connected to Metamask</p>
 
@@ -90,12 +67,33 @@
 			</div>
 		</div>
 	</div>
-	<div style="position: absolute; top: 10px; right: 10px;">
-		<button onclick="window.location.href = '/';" style="margin-right: 5px;">Home page</button>
-		<button onclick="window.location.href = '/admin';">Admin page</button>
-	</div>
-	
-	<script> 
+    <footer class="bg-light footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 text-center text-lg-start my-auto h-100">
+            <ul class="list-inline mb-2">
+              <li class="list-inline-item"><a href="#">About</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Contact</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Terms of &nbsp;Use</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+            </ul>
+            <p class="text-muted small mb-4 mb-lg-0">© ASzW 2023. All Rights Reserved.</p>
+          </div>
+          <div class="col-lg-6 text-center text-lg-end my-auto h-100">
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a></li>
+              <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a></li>
+              <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+	<script>
 
 		let account;
 		const connectMetamask = async () => {
@@ -643,10 +641,10 @@
 					"type": "function"
 				}
 			];
-			const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a"; 
+			const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a";
 			window.web3 = await new Web3(window.ethereum);
 			window.contract = await new window.web3.eth.Contract(ABI, Address);
-			document.getElementById("contractArea").innerHTML = "Connected to Contract"; 
+			document.getElementById("contractArea").innerHTML = "Connected to Contract";
 		}
 
 		const getContractAccount = async () => {

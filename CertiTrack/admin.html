@@ -1,68 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CertiTrack Admin</title>
+    <title>Admin</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
 
     <style>
-        body {
-            background-color: rgb(237, 235, 235);
-            font-family: tahoma;
-            font-size: 33px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
 
-        button {
-            background-color: rgb(181, 157, 2);
-            font-size: 33px;
-            padding: 5px;
-            font-family: Impact;
-        }
-
-        input {
-            width: 25vw;
-            height: 30px;
-            font-size: 25px;
-            font-family: tahoma;
-            outline: none;
-        }
-
-        #readArea {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        #writeArea {
-            margin-top: 20px;
-        }
-
-        button:hover {
-            background-color: rgb(239, 236, 73);
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 60px;
-            font-weight: bold;
-        }
-
-        #cidContainer {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        #cidStatusContainer {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand bg-light navigation-clean navbar-light">
+	    <div class="container">
+	        <a class="navbar-brand" href="#">CertiTrack</a>
+	        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	            <span class="navbar-toggler-icon"></span>
+	        </button>
+
+	        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	            <ul class="navbar-nav mr-auto">
+	                <li class="nav-item active">
+	                    <a class="nav-link" href="/">Home </a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/student">Student</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/validate">Validation</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/admin">Admin<span class="sr-only">(current)</span></a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/contact">Contact</a>
+	                </li>
+	            </ul>
+		     </div>
+	    </div>
+	</nav>
    <div>
         <h1>Mint the digital Diploma token</h1>
     </div>
@@ -76,47 +50,64 @@
         <p id="contractArea">Status: Not connected to Contract</p>
     </div>
 
-  <!-- Option to show the form fields -->
-  <button id="showFormButton">Add a single document</button>
-
   <!-- Form for adding one document to the database -->
-  <form id="addDocumentForm" style="display: none;">
-    <label for="student_id">Student ID:</label>
-    <input type="number" name="student_id" id="student_id" required><br>
+  <h2>Single Document Upload</h2>
+    <form id="addDocumentForm">
+        <label for="student_id">Student ID:</label>
+        <input type="number" name="student_id" id="student_id" required><br>
 
-    <label for="first_name">First Name:</label>
-    <input type="text" name="first_name" id="first_name" required><br>
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" id="first_name" required><br>
 
-    <label for="last_name">Last Name:</label>
-    <input type="text" name="last_name" id="last_name" required><br>
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name" required><br>
 
-    <label for="course">Course:</label>
-    <input type="text" name="course" id="course" required><br>
+        <label for="course">Course:</label>
+        <input type="text" name="course" id="course" required><br>
 
-    <label for="grade">Grade:</label>
-    <input type="number" name="grade" id="grade" required><br>
+        <label for="grade">Grade:</label>
+        <input type="number" name="grade" id="grade" required><br>
 
-    <label for="awardDate">Award Date:</label>
-    <input type="date" name="awardDate" id="awardDate" required><br>
+        <label for="awardDate">Award Date:</label>
+        <input type="date" name="awardDate" id="awardDate" required><br>
 
-    <input type="submit" value="Add Document">
-  </form>
+        <input type="submit" value="Add Document">
+    </form>
 
-  <!-- Option to upload a file -->
+  <!-- upload a file -->
   <input type="file" id="dataFile">
   <button id="uploadFileButton">Upload File</button>
 
   <div id="message"></div>
 
-  <!-- Add a button or link with a specific URL to MongoDB dashboard -->
+  <!-- Link to MongoDB dashboard -->
     <a href="/mongodb-dashboard" target="_blank">Go to MongoDB Dashboard</a>
 
-
-    <div style="position: absolute; top: 10px; right: 10px;">
-        <button onclick="window.location.href = '/';" style="margin-right: 5px;">Home page</button>
-        <button onclick="window.location.href = '/student';">Student page</button>
-    </div>
-
+    <footer class="bg-light footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 text-center text-lg-start my-auto h-100">
+            <ul class="list-inline mb-2">
+              <li class="list-inline-item"><a href="#">About</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Contact</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Terms of &nbsp;Use</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+            </ul>
+            <p class="text-muted small mb-4 mb-lg-0">© ASzW 2023. All Rights Reserved.</p>
+          </div>
+          <div class="col-lg-6 text-center text-lg-end my-auto h-100">
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a></li>
+              <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a></li>
+              <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
   <script>
           let account;
         const connectMetamask = async () => {
@@ -676,59 +667,53 @@
         }
 
 
-    const showFormButton = document.getElementById('showFormButton');
-    const addDocumentForm = document.getElementById('addDocumentForm');
-    const uploadFileButton = document.getElementById('uploadFileButton');
-    const messageDiv = document.getElementById('message');
+        const addDocumentForm = document.getElementById('addDocumentForm');
+        const uploadFileButton = document.getElementById('uploadFileButton');
+        const messageDiv = document.getElementById('message');
 
-    showFormButton.addEventListener('click', () => {
-      // Hide the file upload form and display the single document upload form
-      addDocumentForm.style.display = 'block';
-      uploadFileButton.style.display = 'none';
-    });
 
-    addDocumentForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
+        addDocumentForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
 
-      const formData = new FormData(addDocumentForm);
+          const formData = new FormData(addDocumentForm);
 
-      const newDocument = {
-        student_id: parseInt(formData.get('student_id')),
-        first_name: formData.get('first_name'),
-        last_name: formData.get('last_name'),
-        course: formData.get('course'),
-        grade: parseInt(formData.get('grade')),
-        awardDate: formData.get('awardDate'),
-      };
+          const newDocument = {
+            student_id: parseInt(formData.get('student_id')),
+            first_name: formData.get('first_name'),
+            last_name: formData.get('last_name'),
+            course: formData.get('course'),
+            grade: parseInt(formData.get('grade')),
+            awardDate: formData.get('awardDate'),
+          };
 
-      try {
-        const response = await fetch('/upload', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newDocument),
+          try {
+            const response = await fetch('/upload', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(newDocument),
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+            if (data.success) {
+              // Show success message
+              messageDiv.textContent = 'Document successfully added!';
+              messageDiv.style.color = 'green';
+            } else {
+              // Show error message
+              messageDiv.textContent = 'Error adding document. Please try again.';
+              messageDiv.style.color = 'red';
+            }
+          } catch (error) {
+            console.error('Error adding document:', error);
+            // Show error message
+            messageDiv.textContent = 'Error adding document. Please try again.';
+            messageDiv.style.color = 'red';
+          }
         });
-
-        const data = await response.json();
-        console.log(data);
-
-        if (data.success) {
-          // Show success message
-          messageDiv.textContent = 'Document successfully added!';
-          messageDiv.style.color = 'green';
-        } else {
-          // Show error message
-          messageDiv.textContent = 'Error adding document. Please try again.';
-          messageDiv.style.color = 'red';
-        }
-      } catch (error) {
-        console.error('Error adding document:', error);
-        // Show error message
-        messageDiv.textContent = 'Error adding document. Please try again.';
-        messageDiv.style.color = 'red';
-      }
-    });
 
     // Function to handle file upload and database insertion from JSON or Excel file
     async function handleFileUpload(event) {
