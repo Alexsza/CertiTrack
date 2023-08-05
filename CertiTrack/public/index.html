@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>CertiTrack</title>
+  <meta name="description" content="Diploma Certification App">
+  <link rel="stylesheet" href="public/assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic&amp;display=swap">
+  <link rel="stylesheet" href="public/assets/fonts/font-awesome.min.css">
+  <link rel="stylesheet" href="public/assets/fonts/simple-line-icons.min.css">
+  <link rel="stylesheet" href="public/assets/css/animate.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>  
+  <nav class="navbar navbar-expand bg-light navigation-clean navbar-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">CertiTrack</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="student.html">Student</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="validate.html">Validation</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="admin.html">Admin</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="text-center text-white masthead"
+    style="background:url('assets/img/Diploma.png?t=<%= timestamp %>') no-repeat center center;background-size:cover;">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-9 mx-auto position-relative">
+          <h1 class="mb-5">&nbsp;Transform Your NCI Diploma<br>&nbsp;into a Digital Asset!</h1>
+        </div>
+        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto position-relative">
+          <form>
+            <div class="row">
+              <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
+                  id="studentId" placeholder="Enter your StudentID"></div>
+              <div class="col-12 col-md-9 mb-2 mb-md-0">
+                <input class="form-control form-control-lg" type="email" id="email" placeholder="Enter your email...">
+              </div>
+              <div class="col-12 col-md-3">
+                <button class="btn btn-primary btn-lg" onclick="requestPasscode()">Request your passcode</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section class="text-center bg-light features-icons">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+            <div class="d-flex features-icons-icon"><i class="icon-graduation m-auto text-primary"
+                data-bss-hover-animate="pulse"></i></div>
+            <h3>Your Diploma becomes NFT</h3>
+            <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+              Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+            <div class="d-flex features-icons-icon"><i class="icon-organization m-auto text-primary"
+                data-bss-hover-animate="pulse"></i></div>
+            <h3>Secure and Immutable</h3>
+            <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+              Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+            <div class="d-flex features-icons-icon"><i class="icon-social-linkedin m-auto text-primary"
+                data-bss-hover-animate="pulse"></i></div>
+            <h3>Easy to Share</h3>
+            <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+              Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="showcase">
+    <div class="container-fluid p-0">
+      <div class="row g-0">
+        <div class="col-lg-6 text-white order-lg-2 showcase-img"
+          style="background-image: url(&quot;assets/img/premium_photo-1682075199505-e96c80e84e5a.avif&quot;);">
+          <span></span>
+        </div>
+        <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+          <h2>How to get your Digital Diploma?</h2>
+          <p class="lead mb-0">List all that is needed... MetaMask, e-mai verification, etc...</p>
+          <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
+              id="studentId" placeholder="Enter your StudentID"></div>
+          <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
+              id="passcode" placeholder="Passcode"></div>
+          <div class="col-12 col-md-3"> <button class="btn btn-primary btn-lg"
+              onclick="authenticate()">Authenticate</button></div>
+        </div>
+      </div>
+      <div class="row g-0">
+        <div class="col-lg-6 text-white showcase-img"
+          style="background-image: url(&quot;assets/img/Blockchain.jpeg&quot;);"><span></span></div>
+        <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+          <h2>What is blockchain technology?</h2>
+          <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+            Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam.</p>
+        </div>
+      </div>
+      <div class="row g-0">
+        <div class="col-lg-6 text-white order-lg-2 showcase-img"
+          style="background-image:url(&quot;assets/img/simple.jpg&quot;);"><span></span></div>
+        <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+          <h2>Easy to Use &amp;&nbsp;Customize</h2>
+          <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+            Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="text-center bg-light testimonials">
+    <div class="container">
+      <h2 class="mb-5">Testimonials...</h2>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
+              src="assets/img/CompanyLogo2.jpg">
+            <h5>Company 1</h5>
+            <p class="font-weight-light mb-0">Blah Blah Blah</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
+              src="assets/img/CompanyLogo.jpg">
+            <h5> Company 2</h5>
+            <p class="font-weight-light mb-0">Blah Blah Blah</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
+              src="assets/img/student.jpg">
+            <h5>Student</h5>
+            <p class="font-weight-light mb-0">Blah Blah Blah</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="text-center text-white call-to-action"
+    style="background:url(&quot;bg-masthead.jpg&quot;) no-repeat center center;background-size:cover;">
+    <div class="overlay"></div>
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-9 mx-auto position-relative">
+          <h2 class="mb-4">Want to hear more? Sign up to our Newsletter now!</h2>
+        </div>
+        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto position-relative">
+          <form>
+            <div class="row">
+              <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="email"
+                  placeholder="Enter your email..."></div>
+              <div class="col-12 col-md-3"><button class="btn btn-primary btn-lg" type="submit">Sign up!</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="bg-light footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 text-center text-lg-start my-auto h-100">
+          <ul class="list-inline mb-2">
+            <li class="list-inline-item"><a href="#">About</a></li>
+            <li class="list-inline-item"><span> </span></li>
+            <li class="list-inline-item"><a href="#">Contact</a></li>
+            <li class="list-inline-item"><span> </span></li>
+            <li class="list-inline-item"><a href="#">Terms of &nbsp;Use</a></li>
+            <li class="list-inline-item"><span> </span></li>
+            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+          </ul>
+          <p class="text-muted small mb-4 mb-lg-0">© ASzW 2023. All Rights Reserved.</p>
+        </div>
+        <div class="col-lg-6 text-center text-lg-end my-auto h-100">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a></li>
+            <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a></li>
+            <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="public/assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="public/assets/js/bs-init.js"></script>
+
+  <script>
+
+    let studentId;
+
+
+    function requestPasscode() {
+      studentId = document.getElementById("studentId").value;
+      const email = document.getElementById("email").value;
+
+      if (studentId && email) {
+        const passcode = Math.floor(Math.random() * 10000);
+        sendEmail(email, passcode);
+
+      } else {
+        document.getElementById("authenticationStatus").innerHTML = "Please enter both Student ID and Email.";
+      }
+    }
+
+    function authenticate() {
+      let passcode = document.getElementById("passcode").value; // Change 'const' to 'let' here
+
+      // Remove the constant value after testing
+      passcode = 111;
+
+      if (passcode) {
+        // create logic for function!!!
+
+        // Redirect to minting page if authentication successful
+        window.location.href = "/createToken"; // Use '/createToken' instead of '/student'
+      } else {
+        document.getElementById("authenticationStatus").innerHTML = "Please enter the passcode.";
+      }
+    }
+
+
+    function sendEmail(email, passcode) {
+      // Create function to send e-mail
+      //mailchimp?
+    }
+
+  </script>
+
+</body>
+
+</html>
