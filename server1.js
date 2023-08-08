@@ -19,8 +19,12 @@ const ipfs = IPFS.create({
 });
 
 const port = process.env.PORT || 3000;
-const MONGO_URI = "mongodb+srv://certitrackadmin:BR8OyDRjFz1IqytG@certitrackproject.83j0ojd.mongodb.net/?retryWrites=true&w=majority";
+const MONGO_URI =
+  "mongodb+srv://certitrackadmin:BR8OyDRjFz1IqytG@certitrackproject.83j0ojd.mongodb.net/?retryWrites=true&w=majority";
+
 const client = new MongoClient(MONGO_URI);
+let studentCollection = null;
+let cidCollection = null;
 
 async function connect() {
   try {
@@ -37,27 +41,11 @@ async function connect() {
 }
 
 
-// Middleware to handle MongoDB connection
-async function connectMiddleware(req, res, next) {
-  try {
-    if (!client || (client && !client.topology.isConnected())) {
-      await connect(); // Reconnect to MongoDB if not already connected
-      console.log('Reconnected to MongoDB');
-    }
-  } catch (error) {
-    console.error('Error reconnecting to MongoDB:', error);
-  }
-  next();
-}
-
 connect();
 
 let studentId = 0;
 
-
-// app.use(express.static('public'));
-// Set the public folder as static
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -80,35 +68,35 @@ const uploadCID = multer({ storage: storageCID });
 // Function to handle individual file upload and database insertion
 async function handleDataUpload(req, res) {
   try {
-    const data = req.body;
-    if (!data) {
-      return res.status(400).json({ success: false, error: 'No data provided.' });
+      const data = req.body;
+      if (!data) {
+        return res.status(400).json({ success: false, error: 'No data provided.' });
+      }
+
+      await client.connect();
+      console.log('Connected to MongoDB');
+
+      const database = client.db('certitrackproject');
+      const collection = database.collection('certitrackproject');
+
+      // Insert the data into the collection
+      const insertResult = await collection.insertOne(data);
+
+      console.log('Data inserted into MongoDB');
+      console.log('Insert result:', insertResult);
+
+      return res.json({
+        success: true,
+        message: 'Data inserted into MongoDB',
+      });
+    } catch (error) {
+      console.error('Error adding data to MongoDB:', error);
+      return res.status(500).json({ success: false, error: 'Error adding data to MongoDB' });
+    } finally {
+      await client.close();
+      console.log('Disconnected from MongoDB');
     }
-
-    await client.connect();
-    console.log('Connected to MongoDB');
-
-    const database = client.db('certitrackproject');
-    const collection = database.collection('certitrackproject');
-
-    // Insert the data into the collection
-    const insertResult = await collection.insertOne(data);
-
-    console.log('Data inserted into MongoDB');
-    console.log('Insert result:', insertResult);
-
-    return res.json({
-      success: true,
-      message: 'Data inserted into MongoDB',
-    });
-  } catch (error) {
-    console.error('Error adding data to MongoDB:', error);
-    return res.status(500).json({ success: false, error: 'Error adding data to MongoDB' });
-  } finally {
-    await client.close();
-    console.log('Disconnected from MongoDB');
   }
-}
 
 
 // Function to handle Excel file upload and database insertion
@@ -210,7 +198,7 @@ app.get('/sendStudentId', async (req, res) => {
       const resultIPFS = await ipfs.add(fileData);
       const cid = resultIPFS.cid.toString();
 
-      const insertResult = await cidCollection.insertOne({ student_id: parseInt(studentId), cid: cid });
+       const insertResult = await cidCollection.insertOne({ student_id: parseInt(studentId), cid: cid });
       console.log('CID inserted into MongoDB:', insertResult);
 
       // Remove temporary files
@@ -233,7 +221,7 @@ app.get('/sendStudentId', async (req, res) => {
   }
 });
 
-app.get('/validateCID', connectMiddleware, async (req, res) => {
+  app.get('/validateCID', async (req, res) => {
   const cid = req.query.cid;
 
   try {
@@ -257,64 +245,33 @@ app.get('/validateCID', connectMiddleware, async (req, res) => {
 app.post('/upload', handleDataUpload);
 app.post('/upload-file', upload.single('dataFile'), handleFileUpload);
 
-app.delete('/deleteDocument/:studentId', async (req, res) => {
-  const studentId = req.params.studentId;
-
-  try {
-    // Connect to MongoDB
-    await client.connect();
-
-    const database = client.db('certitrackproject');
-    const collection = database.collection('certitrackproject');
-
-    // Delete the document with the given studentId
-    const deleteResult = await collection.deleteOne({ student_id: parseInt(studentId) });
-
-    if (deleteResult.deletedCount === 1) {
-      console.log(`Document with student ID ${studentId} deleted`);
-      return res.json({ success: true, message: 'Document deleted successfully' });
-    } else {
-      console.log(`Document with student ID ${studentId} not found`);
-      return res.json({ success: false, message: 'Document not found' });
-    }
-  } catch (error) {
-    console.error('Error deleting document:', error);
-    return res.status(500).json({ success: false, error: 'Error deleting document' });
-  } finally {
-    // Close the MongoDB connection
-    await client.close();
-  }
-});
-
-
 app.get('/generate-certificate', async (req, res) => {
   // ... existing code for generating and uploading certificate ...
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/student', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'student.html'));
+  res.sendFile(path.join(__dirname, 'student.html'));
 });
 
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 app.get('/contact', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'contact.html'));
+  res.sendFile(path.join(__dirname, 'contact.html'));
 });
 
 app.get('/validate', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'validate.html'));
+  res.sendFile(path.join(__dirname, 'validate.html'));
 });
 
 app.get('/createToken', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'createToken.html'));
+  res.sendFile(path.join(__dirname, 'createToken.html'));
 });
-
 
 app.get('/mongodb-dashboard', (req, res) => {
   const dashboardURL = 'https://cloud.mongodb.com/v2/64a82ada32ff6b587382a697#/clusters';

@@ -21,7 +21,6 @@
     "ipfs": "^0.66.1",
     "ipfs-api": "^17.5.0",
     "ipfs-http-client": "^50.1.2",
-    "jquery": "^3.7.0",
     "mongodb": "^5.7.0",
     "mongoose": "^7.3.2",
     "multer": "^1.4.5-lts.1",

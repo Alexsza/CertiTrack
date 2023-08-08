@@ -1,10 +1,8 @@
 const express = require('express');
 const path = require('path');
-const axios = require('axios');
 const ejs = require('ejs');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-const FormData = require('form-data');
 const IPFS = require('ipfs-http-client');
 const { MongoClient } = require('mongodb');
 const multer = require('multer');
@@ -20,37 +18,49 @@ const ipfs = IPFS.create({
   }
 });
 
-// const PORT = 8080;
 const port = process.env.PORT || 3000;
-const MONGO_URI =
-  "mongodb+srv://certitrackadmin:BR8OyDRjFz1IqytG@certitrackproject.83j0ojd.mongodb.net/?retryWrites=true&w=majority";
 
+const MONGO_URI = "mongodb+srv://certitrackadmin:BR8OyDRjFz1IqytG@certitrackproject.83j0ojd.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(MONGO_URI);
-let collection = null;
 
 async function connect() {
   try {
     await client.connect();
     console.log('Connected to MongoDB');
-
-    const database = client.db('certitrackproject');
-    collection = database.collection('certitrackproject');
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
   }
 }
+connect(); // Initial connection
+
+// Middleware to handle MongoDB connection
+async function connectMiddleware(req, res, next) {
+  try {
+    if (!client || (client && !client.topology.isConnected())) {
+      await connect(); // Reconnect to MongoDB if not already connected
+      console.log('Reconnected to MongoDB');
+    }
+  } catch (error) {
+    console.error('Error reconnecting to MongoDB:', error);
+  }
+  next();
+}
 
 connect();
 
-// Configure multer for admin file upload
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+let studentId = 0;
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(connectMiddleware); // Apply the MongoDB connection middleware
 
-// Configure Multer for certificate file uploads
+
+// Multer for admin file upload
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// Multer for certificate and Excel file uploads
 const storageCID = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/');
@@ -60,7 +70,7 @@ const storageCID = multer.diskStorage({
   },
 });
 
-const uploadCID = multer({ storageCID });
+const uploadCID = multer({ storage: storageCID });
 
 // Function to handle individual file upload and database insertion
 async function handleDataUpload(req, res) {
@@ -227,7 +237,17 @@ app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
 
-
+// Close MongoDB connection when the server is shutting down
+process.on('SIGINT', async () => {
+  try {
+    await client.close();
+    console.log('Disconnected from MongoDB');
+    process.exit(0);
+  } catch (error) {
+    console.error('Error closing MongoDB connection:', error);
+    process.exit(1);
+  }
+});
 
     app.get('/sendStudentId', async (req, res) => {
       // ... existing code for handling student ID ...
