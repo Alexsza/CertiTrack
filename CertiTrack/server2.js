@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
-const puppeteer = require('puppeteer');
+const { chromium } = require('playwright')
 const IPFS = require('ipfs-http-client');
 const { MongoClient } = require('mongodb');
 const multer = require('multer');
@@ -19,12 +19,8 @@ const ipfs = IPFS.create({
 });
 
 const port = process.env.PORT || 3000;
-const MONGO_URI =
-  "mongodb+srv://certitrackadmin:BR8OyDRjFz1IqytG@certitrackproject.83j0ojd.mongodb.net/?retryWrites=true&w=majority";
-
+const MONGO_URI = "mongodb+srv://certitrackadmin:BR8OyDRjFz1IqytG@certitrackproject.83j0ojd.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(MONGO_URI);
-let studentCollection = null;
-let cidCollection = null;
 
 async function connect() {
   try {
@@ -32,18 +28,43 @@ async function connect() {
     console.log('Connected to MongoDB');
 
     const database = client.db('certitrackproject');
+
     studentCollection = database.collection('certitrackproject'); // Collection for student data
     cidCollection = database.collection('CIDlist'); // Collection for storing CIDs
+    adminCollection = database.collection('adminSafe'); 
+
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
   }
+}
+
+
+// Middleware to handle MongoDB connection
+async function connectMiddleware(req, res, next) {
+  try {
+    if (!client || (client && !client.topology.isConnected())) {
+      console.log('Attempting to reconnect to MongoDB...');
+      await connect(); // Reconnect to MongoDB if not already connected
+      if (client && client.topology.isConnected()) {
+        console.log('Reconnected to MongoDB');
+      } else {
+        console.log('Failed to reconnect to MongoDB');
+      }
+    } else {
+      console.log('Already connected to MongoDB');
+    }
+  } catch (error) {
+    console.error('Error reconnecting to MongoDB:', error);
+  }
+  next();
 }
 
 connect();
 
 let studentId = 0;
 
-app.use(express.static('public'));
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -63,38 +84,58 @@ const storageCID = multer.diskStorage({
 
 const uploadCID = multer({ storage: storageCID });
 
+app.post('/admin-signin', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const database = client.db('certitrackproject');
+    const adminCollection = database.collection('adminSafe'); // Collection for admin data
+
+    const admin = await adminCollection.findOne({ user: username, password: password });
+
+    if (admin) {
+      res.json({ success: true, message: 'Admin sign-in successful' });
+    } else {
+      res.json({ success: false, message: 'Admin sign-in failed' });
+    }
+  } catch (error) {
+    console.error('Error during admin sign-in:', error);
+    res.status(500).json({ success: false, message: 'Error during admin sign-in' });
+  }
+});
+
 // Function to handle individual file upload and database insertion
 async function handleDataUpload(req, res) {
   try {
-      const data = req.body;
-      if (!data) {
-        return res.status(400).json({ success: false, error: 'No data provided.' });
-      }
-
-      await client.connect();
-      console.log('Connected to MongoDB');
-
-      const database = client.db('certitrackproject');
-      const collection = database.collection('certitrackproject');
-
-      // Insert the data into the collection
-      const insertResult = await collection.insertOne(data);
-
-      console.log('Data inserted into MongoDB');
-      console.log('Insert result:', insertResult);
-
-      return res.json({
-        success: true,
-        message: 'Data inserted into MongoDB',
-      });
-    } catch (error) {
-      console.error('Error adding data to MongoDB:', error);
-      return res.status(500).json({ success: false, error: 'Error adding data to MongoDB' });
-    } finally {
-      await client.close();
-      console.log('Disconnected from MongoDB');
+    const data = req.body;
+    if (!data) {
+      return res.status(400).json({ success: false, error: 'No data provided.' });
     }
+
+    await client.connect();
+    console.log('Connected to MongoDB');
+
+    const database = client.db('certitrackproject');
+    const collection = database.collection('certitrackproject');
+
+    // Insert the data into the collection
+    const insertResult = await collection.insertOne(data);
+
+    console.log('Data inserted into MongoDB');
+    console.log('Insert result:', insertResult);
+
+    return res.json({
+      success: true,
+      message: 'Data inserted into MongoDB',
+    });
+  } catch (error) {
+    console.error('Error adding data to MongoDB:', error);
+    return res.status(500).json({ success: false, error: 'Error adding data to MongoDB' });
+  } finally {
+    await client.close();
+    console.log('Disconnected from MongoDB');
   }
+}
 
 
 // Function to handle Excel file upload and database insertion
@@ -182,9 +223,10 @@ app.get('/sendStudentId', async (req, res) => {
       const tempFilePath = path.join(__dirname, 'uploads', 'template.html');
       fs.writeFileSync(tempFilePath, renderedCertificate);
 
-      // Convert the HTML to PNG using Puppeteer
-      const browser = await puppeteer.launch({ headless: "new" });
-      const page = await browser.newPage();
+      // Convert the HTML to PNG using Playwright
+      const browser = await chromium.launch({ headless: true });
+      const context = await browser.newContext();
+      const page = await context.newPage();
       await page.setContent(renderedCertificate);
       const pngFile = path.join(__dirname, 'uploads', 'certificate.png');
       await page.screenshot({ path: pngFile, fullPage: true });
@@ -196,7 +238,7 @@ app.get('/sendStudentId', async (req, res) => {
       const resultIPFS = await ipfs.add(fileData);
       const cid = resultIPFS.cid.toString();
 
-       const insertResult = await cidCollection.insertOne({ student_id: parseInt(studentId), cid: cid });
+      const insertResult = await cidCollection.insertOne({ student_id: parseInt(studentId), cid: cid });
       console.log('CID inserted into MongoDB:', insertResult);
 
       // Remove temporary files
@@ -219,36 +261,105 @@ app.get('/sendStudentId', async (req, res) => {
   }
 });
 
+app.get('/validateCID', connectMiddleware, async (req, res) => {
+  const cid = req.query.cid;
+
+  try {
+    // Check if the given CID exists in the cidCollection
+    const result = await cidCollection.findOne({ cid: cid });
+
+    if (result) {
+      console.log('CID is valid:', cid);
+      res.json({ success: true, message: 'CID is valid', studentId: result.student_id });
+    } else {
+      console.log('Invalid CID:', cid);
+      res.json({ success: false, message: 'Invalid CID' });
+    }
+  } catch (error) {
+    console.error('Error validating CID:', error);
+    res.status(500).json({ success: false, message: 'Error validating CID' });
+  }
+});
+
+//MongoDB 
+app.get('/validateCIDMongoDB', connectMiddleware, async (req, res) => {
+  const cid = req.query.cid;
+
+  try {
+    // Check if the given CID exists in the CIDlist collection of MongoDB
+    const result = await cidCollection.findOne({ cid: cid });
+
+    if (result) {
+      console.log('CID is valid:', cid);
+      res.json({ success: true, message: 'CID is valid', studentId: result.student_id });
+    } else {
+      console.log('Invalid CID:', cid);
+      res.json({ success: false, message: 'Invalid CID' });
+    }
+  } catch (error) {
+    console.error('Error validating CID:', error);
+    res.status(500).json({ success: false, message: 'Error validating CID' });
+  }
+});
+
+
 app.post('/upload', handleDataUpload);
 app.post('/upload-file', upload.single('dataFile'), handleFileUpload);
 
-app.get('/generate-certificate', async (req, res) => {
-  // ... existing code for generating and uploading certificate ...
+app.delete('/deleteDocument/:studentId', async (req, res) => {
+  const studentId = req.params.studentId;
+
+  try {
+    // Connect to MongoDB
+    await client.connect();
+
+    const database = client.db('certitrackproject');
+    const collection = database.collection('certitrackproject');
+
+    // Delete the document with the given studentId
+    const deleteResult = await collection.deleteOne({ student_id: parseInt(studentId) });
+
+    if (deleteResult.deletedCount === 1) {
+      console.log(`Document with student ID ${studentId} deleted`);
+      return res.json({ success: true, message: 'Document deleted successfully' });
+    } else {
+      console.log(`Document with student ID ${studentId} not found`);
+      return res.json({ success: false, message: 'Document not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    return res.status(500).json({ success: false, error: 'Error deleting document' });
+  } finally {
+    // Close the MongoDB connection
+    await client.close();
+  }
 });
 
+
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/student', (req, res) => {
-  res.sendFile(path.join(__dirname, 'student.html'));
+  res.sendFile(path.join(__dirname, 'public', 'student.html'));
 });
 
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 app.get('/contact', (req, res) => {
-  res.sendFile(path.join(__dirname, 'contact.html'));
+  res.sendFile(path.join(__dirname, 'public', 'contact.html'));
 });
 
 app.get('/validate', (req, res) => {
-  res.sendFile(path.join(__dirname, 'validate.html'));
+  res.sendFile(path.join(__dirname, 'public', 'validate.html'));
 });
 
 app.get('/createToken', (req, res) => {
-  res.sendFile(path.join(__dirname, 'createToken.html'));
+  res.sendFile(path.join(__dirname, 'public', 'createToken.html'));
 });
+
 
 app.get('/mongodb-dashboard', (req, res) => {
   const dashboardURL = 'https://cloud.mongodb.com/v2/64a82ada32ff6b587382a697#/clusters';
