@@ -2,6 +2,7 @@
 <html>
 
 <head>
+<<<<<<< HEAD
     <title>Minting</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
 
@@ -62,6 +63,14 @@
             flex-wrap: wrap;
         }
     </style>
+=======
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Minting</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+>>>>>>> 52643aeb068a9de38baeef0817bc5458094533f8
 </head>
 
 <body>
@@ -96,6 +105,7 @@
     </nav>
 
     <div>
+<<<<<<< HEAD
         <h1>Mint the digital Diploma token</h1>
     </div>
 
@@ -107,6 +117,16 @@
         onclick="authenticate()">Authenticate</button></div>
   </div>
 
+=======
+        <h1>Empower Your Future: Create Your NCI Digital Diploma</h1>
+        <p>Take control of your academic achievements with CertiTrack.
+            Using a MetaMask account, mint your diploma via our smart contract with your student ID.
+            Enjoy tamper-proof, verifiable credentials accessible through a simple URL link.
+            Share your success confidently with employers and peers online.
+            Shape the future of credentials today!</p>
+    </div>
+
+>>>>>>> 52643aeb068a9de38baeef0817bc5458094533f8
     <div id="readArea">
         <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
         <p id="userArea">Status: Not connected to Metamask</p>
@@ -152,6 +172,11 @@
         </div>
     </footer>
 
+<<<<<<< HEAD
+=======
+    <script src="public/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="public/assets/js/bs-init.js"></script>
+>>>>>>> 52643aeb068a9de38baeef0817bc5458094533f8
     <script>
 
         let account;
@@ -713,10 +738,14 @@
             studentId = document.getElementById("studentIdInput").value;
             if (studentId !== "") {
                 try {
+<<<<<<< HEAD
                     const response = await fetch(`/sendStudentId?studentId=${studentId}`, {
                         method: 'GET', // Specify the HTTP method
                         headers: {},
                     });
+=======
+                    const response = await fetch(`/sendStudentId?studentId=${studentId}`);
+>>>>>>> 52643aeb068a9de38baeef0817bc5458094533f8
                     const data = await response.json();
                     if (data.success) {
                         document.getElementById("cidStatus").innerHTML = `CID Retrieved: `;

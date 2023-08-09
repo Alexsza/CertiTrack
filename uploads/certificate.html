@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Certificate</title>
+  <!-- Style to NCI cert style -->
+</head>
+<body>
+  <div style="width:800px; height:600px; padding:20px; text-align:center; border: 10px solid #787878">
+    <div style="width:750px; height:550px; padding:20px; text-align:center; border: 5px solid #787878">
+      <span style="font-size:35px; font-weight:bold"> Higher Education and Training Award</span>
+      <br><br>
+      <span style="font-size:35px; font-weight:bold">Certificate in <%= course %></span>
+      <br><br>
+      <span style="font-size:25px"><i>awarded to</i></span>
+      <br><br>
+      <span style="font-size:30px"><b><%= student.first_name %> <%= student.last_name %></b></span><br/><br/>
+      <span style="font-size:25px"><i>of</i></span> <br/><br/>
+      <span style="font-size:25px"><i>National College of Ireland </i></span> <br/><br/>
+
+      <span style="font-size:20px">on</span> <br/><br/><br/><br/>
+      <span style="font-size:30px"><%= grade.getAwardDate() %></span>
+    </div>
+  </div>
+</body>
+</html>
