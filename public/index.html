@@ -6,12 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <title>CertiTrack</title>
   <meta name="description" content="Diploma Certification App">
-  <link rel="stylesheet" href="public/assets/bootstrap/css/bootstrap.min.css">
+
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic&amp;display=swap">
-  <link rel="stylesheet" href="public/assets/fonts/font-awesome.min.css">
-  <link rel="stylesheet" href="public/assets/fonts/simple-line-icons.min.css">
-  <link rel="stylesheet" href="public/assets/css/animate.min.css">
+  <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+  <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
   <style>
@@ -19,10 +18,56 @@
       background-color: #eaecec;
     }
 
-    /* Increase the font size and padding of the navbar links */
     .navbar-nav .nav-link {
       font-size: 1.5rem;
       padding: 0.5rem 0rem;
+    }
+
+    #custom-header {
+      background: url('assets/img/Diploma.png?t=<%= timestamp %>') no-repeat center center;
+      background-size: cover;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    #custom-header h1 {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      /* Increase letter spacing for a futuristic look */
+      text-transform: uppercase;
+      /* Uppercase text for emphasis */
+    }
+
+    #custom-header span {
+      font-size: 20px;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .btn,
+    .btn-upload {
+      background-color: #784794;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .btn-upload {
+      display: inline-block;
+    }
+
+    #dataFileLabel {
+      background-color: #24285b;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
     }
 
     .connectButton {
@@ -57,6 +102,59 @@
     #showNFT {
       width: 100%;
       text-align: right;
+    }
+
+    .popup-container {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 900;
+    }
+
+    #addDocumentForm {
+      width: 600px;
+      height: 600px;
+      padding: 20px;
+      background-color: #f5f5dc;
+      /* Light beige background color */
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #addDocumentForm label,
+    #addDocumentForm input {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    #addDocumentForm label {
+      text-align: left;
+      font-weight: bold;
+    }
+
+    #addDocumentForm input {
+      text-align: left;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
   </style>
 
@@ -93,225 +191,250 @@
     </div>
   </nav>
 
-  <header class="text-center text-white masthead"
-    style="background:url('assets/img/Diploma.png?t=<%= timestamp %>') no-repeat center center;background-size:cover;">
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="row">
-        <div class="col-xl-9 mx-auto position-relative">
-          <h1 class="mb-5">&nbsp;Transform Your NCI Diploma<br>&nbsp;into a Digital Asset!</h1>
-        </div>
-        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto position-relative">
-          <form>
-            <div class="row">
-              <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
-                  id="studentId" placeholder="Enter your StudentID"></div>
-              <div class="col-12 col-md-9 mb-2 mb-md-0">
-                <input class="form-control form-control-lg" type="email" id="email" placeholder="Enter your email...">
-              </div>
-              <div class="col-12 col-md-3">
-                <button class="btn btn-primary btn-lg" onclick="requestPasscode()">Request your passcode</button>
-              </div>
-          </form>
-        </div>
+  <div class="container">
+    <div id="custom-header" class="row">
+      <div class="col-12">
+        <h1>Welcome to CertiTrack:<br> Your Path to Verified Digital Diplomas</h1>
+        <span>Welcome to CertiTrack, where education validation meets innovation!
+          <br> In collaboration with NCI, we're transforming the way academic achievements are recognized.
+          Our platform empowers students, institutions, and employers to seamlessly authenticate digital diplomas
+          through secure blockchain technology.
+        </span>
       </div>
     </div>
-  </header>
-  <section class="text-center bg-light features-icons">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4">
-          <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-            <div class="d-flex features-icons-icon"><i class="icon-graduation m-auto text-primary"
-                data-bss-hover-animate="pulse"></i></div>
-            <h3>Your Diploma becomes NFT</h3>
-            <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
-              Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
-          </div>
+    <div class="py-4 py-xl-5 container-fluid">
+      <div class="row gy-4 gy-md-0">
+        <div class="col-lg-12 mx-auto position-relative text-center">
+          <h1 class="mb-3">Transform Your NCI Diploma into a Digital Asset!</h1>
+          <p style="font-size: large;">Say goodbye to paper certificates and hello to tamper-proof,
+            instantly verifiable credentials. <br>
+            CertiTrack, in partnership with NCI, is your key to a more efficient, transparent, and credible education
+            landscape!
+            <br> Unlock the future of credentialing by turning your NCI diploma into a secure and verifiable
+            Non-Fungible Token known as NFT.
+            <br> Enter your details below to get started!
+          </p>
         </div>
-        <div class="col-lg-4">
-          <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-            <div class="d-flex features-icons-icon"><i class="icon-organization m-auto text-primary"
-                data-bss-hover-animate="pulse"></i></div>
-            <h3>Secure and Immutable</h3>
-            <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
-              Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-            <div class="d-flex features-icons-icon"><i class="icon-social-linkedin m-auto text-primary"
-                data-bss-hover-animate="pulse"></i></div>
-            <h3>Easy to Share</h3>
-            <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
-              Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="showcase">
-    <div class="container-fluid p-0">
-      <div class="row g-0">
-        <div class="col-lg-6 text-white order-lg-2 showcase-img"
-          style="background-image: url(&quot;assets/img/premium_photo-1682075199505-e96c80e84e5a.avif&quot;);">
-          <span></span>
-        </div>
-        <div class="col-lg-6 my-auto order-lg-1 showcase-text">
-          <h2>How to get your Digital Diploma?</h2>
-          <p class="lead mb-0">List all that is needed... MetaMask, e-mai verification, etc...</p>
-          <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
-              id="studentId" placeholder="Enter your StudentID"></div>
-          <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
-              id="passcode" placeholder="Passcode"></div>
-          <div class="col-12 col-md-3"> <button class="btn btn-primary btn-lg"
-              onclick="authenticate()">Authenticate</button></div>
-        </div>
-      </div>
-      <div class="row g-0">
-        <div class="col-lg-6 text-white showcase-img"
-          style="background-image: url(&quot;assets/img/Blockchain.jpeg&quot;);"><span></span></div>
-        <div class="col-lg-6 my-auto order-lg-1 showcase-text">
-          <h2>What is blockchain technology?</h2>
-          <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
-            Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam.</p>
-        </div>
-      </div>
-      <div class="row g-0">
-        <div class="col-lg-6 text-white order-lg-2 showcase-img"
-          style="background-image:url(&quot;assets/img/simple.jpg&quot;);"><span></span></div>
-        <div class="col-lg-6 my-auto order-lg-1 showcase-text">
-          <h2>Easy to Use &amp;&nbsp;Customize</h2>
-          <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
-            Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="text-center bg-light testimonials">
-    <div class="container">
-      <h2 class="mb-5">Testimonials...</h2>
-      <div class="row">
-        <div class="col-lg-4">
-          <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
-              src="assets/img/CompanyLogo2.jpg">
-            <h5>Company 1</h5>
-            <p class="font-weight-light mb-0">Blah Blah Blah</p>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
-              src="assets/img/CompanyLogo.jpg">
-            <h5> Company 2</h5>
-            <p class="font-weight-light mb-0">Blah Blah Blah</p>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
-              src="assets/img/student.jpg">
-            <h5>Student</h5>
-            <p class="font-weight-light mb-0">Blah Blah Blah</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="text-center text-white call-to-action"
-    style="background:url(&quot;bg-masthead.jpg&quot;) no-repeat center center;background-size:cover;">
-    <div class="overlay"></div>
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="row">
-        <div class="col-xl-9 mx-auto position-relative">
-          <h2 class="mb-4">Want to hear more? Sign up to our Newsletter now!</h2>
-        </div>
-        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto position-relative">
-          <form>
-            <div class="row">
-              <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="email"
-                  placeholder="Enter your email..."></div>
-              <div class="col-12 col-md-3"><button class="btn btn-primary btn-lg" type="submit">Sign up!</button>
-              </div>
+        <div class="col-md-4">
+          <div class="d-flex flex-column align-items-center">
+            <div class="col-12 col-md-9 mb-2 mb-md-0">
+              <input class="form-control form-control-lg" type="text" id="studentId" placeholder="Enter your StudentID">
             </div>
-          </form>
+            <p id="connectionStatus" class="mb-0"></p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="col-12 col-md-9 mb-2 mb-md-0">
+            <input class="form-control form-control-lg" type="email" id="email" placeholder="Enter your email...">
+          </div>
+        </div>
+        <div class="col-md-4"><!-- Each button will have a column width of 4 -->
+          <div class="col-12 col-md-3">
+            <button class="btn btn-primary btn-lg" onclick="requestPasscode()">Request your passcode</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="py-4 py-xl-5">
+        <div class="row gy-4 gy-md-0">
+          <div class="col-lg-4">
+            <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+              <div class="d-flex features-icons-icon"><i class="icon-graduation m-auto text-primary"
+                  data-bss-hover-animate="pulse"></i>
+              </div>
+              <h3>Your Diploma becomes NFT</h3>
+              <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+                Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+              <div class="d-flex features-icons-icon"><i class="icon-organization m-auto text-primary"
+                  data-bss-hover-animate="pulse"></i>
+              </div>
+              <h3>Secure and Immutable</h3>
+              <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+                Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+              <div class="d-flex features-icons-icon"><i class="icon-social-linkedin m-auto text-primary"
+                  data-bss-hover-animate="pulse"></i>
+              </div>
+              <h3>Easy to Share</h3>
+              <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+                Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam. </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
-  <footer class="bg-light footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6 text-center text-lg-start my-auto h-100">
-          <ul class="list-inline mb-2">
-            <li class="list-inline-item"><a href="#">About</a></li>
-            <li class="list-inline-item"><span> </span></li>
-            <li class="list-inline-item"><a href="#">Contact</a></li>
-            <li class="list-inline-item"><span> </span></li>
-            <li class="list-inline-item"><a href="#">Terms of &nbsp;Use</a></li>
-            <li class="list-inline-item"><span> </span></li>
-            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-          </ul>
-          <p class="text-muted small mb-4 mb-lg-0">© ASzW 2023. All Rights Reserved.</p>
+
+    <section class="showcase">
+      <div class="container-fluid p-0">
+        <div class="row g-0">
+          <div class="col-lg-6 text-white order-lg-2 showcase-img"
+            style="background-image: url('assets/img/steps123.jpg'); background-size: cover; background-position: center;">
+            <span></span>
+          </div>
+          <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+            <h2>Transform Your NCI Diploma into a Digital Asset with CertiTrack!</h2>
+            <p class="lead mb-0">
+              To embark on this journey, make sure you have:
+              <ul class="list-unstyled">
+                <br>
+                <li class="d-flex mb-2">
+                  <span class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg xmlns="http://www.w3.org/2000/svg"
+                      width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                      stroke-linecap="round" stroke-linejoin="round"
+                      class="icon icon-tabler icon-tabler-circle fs-5 text-primary-emphasis">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M5 12l5 5l10 -10"></path>
+                    </svg></span>
+                  <span>Crypto Wallet with Metamask to manage your NFT securely</span>
+                </li>
+                <li class="d-flex mb-2">
+                  <span class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg xmlns="http://www.w3.org/2000/svg"
+                      width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                      stroke-linecap="round" stroke-linejoin="round"
+                      class="icon icon-tabler icon-tabler-circle fs-5 text-primary-emphasis">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M5 12l5 5l10 -10"></path>
+                    </svg></span>
+                  <span>Passcode sent to your Student Email (valid for 24 hours only)</span>
+                </li>
+                <li class="d-flex mb-2">
+                  <span class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg xmlns="http://www.w3.org/2000/svg"
+                      width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                      stroke-linecap="round" stroke-linejoin="round"
+                      class="icon icon-tabler icon-tabler-circle fs-5 text-primary-emphasis">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M5 12l5 5l10 -10"></path>
+                    </svg></span>
+                  <span> NCI Diploma or Certificate from 2022 or later</span>
+                </li>
+              </ul>
+
+            <p class="lead mb-0"> With these prerequisites, you're set! <br>
+              Click below to start transforming your diploma and embark on a journey of digital verification and
+              recognition.</p>
+
+            <div class="col-12 col-md-5"> <button class="btn btn-primary btn-lg" onclick="createTokenPage()">Create
+                Digital Diploma</button></div>
+          </div>
         </div>
-        <div class="col-lg-6 text-center text-lg-end my-auto h-100">
-          <ul class="list-inline mb-0">
-            <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a></li>
-            <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a></li>
-            <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a></li>
-          </ul>
+        <div class="row g-0">
+          <div class="col-lg-6 text-white showcase-img"
+            style="background-image: url(&quot;assets/img/Blockchain.jpeg&quot;);"><span></span></div>
+          <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+            <h2>What is blockchain technology?</h2>
+            <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+              Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam.</p>
+          </div>
+        </div>
+        <div class="row g-0">
+          <div class="col-lg-6 text-white order-lg-2 showcase-img"
+            style="background-image:url(&quot;assets/img/simple.jpg&quot;);"><span></span></div>
+          <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+            <h2>Easy to Use &amp;&nbsp;Customize</h2>
+            <p class="lead mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Sed eleifend consectetur pharetra. In vestibulum ligula enim, et ornare nisl rhoncus sit amet.
+              Donec a mi quis nunc placerat euismod. Nulla tincidunt venenatis ligula nec aliquam.</p>
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
-  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-  <script src="assets/js/bs-init.js"></script>
+    </section>
+    <section class="text-center bg-light testimonials">
+      <div class="container">
+        <h2 class="mb-5">Testimonials...</h2>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
+                src="assets/img/CompanyLogo2.jpg">
+              <h5>Company 1</h5>
+              <p class="font-weight-light mb-0">Blah Blah Blah</p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
+                src="assets/img/CompanyLogo.jpg">
+              <h5> Company 2</h5>
+              <p class="font-weight-light mb-0">Blah Blah Blah</p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mx-auto testimonial-item mb-5 mb-lg-0"><img class="rounded-circle img-fluid mb-3"
+                src="assets/img/student.jpg">
+              <h5>Student</h5>
+              <p class="font-weight-light mb-0">Blah Blah Blah</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <script>
+    <footer class="bg-light footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 text-center text-lg-start my-auto h-100">
+            <ul class="list-inline mb-2">
+              <li class="list-inline-item"><a href="#">About</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Contact</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Terms of &nbsp;Use</a></li>
+              <li class="list-inline-item"><span> </span></li>
+              <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+            </ul>
+            <p class="text-muted small mb-4 mb-lg-0">© ASzW 2023. All Rights Reserved.</p>
+          </div>
+          <div class="col-lg-6 text-center text-lg-end my-auto h-100">
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a></li>
+              <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a></li>
+              <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
 
-    let studentId;
+    <script>
 
+      let studentId;
 
-    function requestPasscode() {
-      studentId = document.getElementById("studentId").value;
-      const email = document.getElementById("email").value;
+      function requestPasscode() {
+        studentId = document.getElementById("studentId").value;
+        const email = document.getElementById("email").value;
 
-      if (studentId && email) {
-        const passcode = Math.floor(Math.random() * 10000);
-        sendEmail(email, passcode);
+        if (studentId && email) {
+          const passcode = Math.floor(Math.random() * 10000);
+          sendEmail(email, passcode);
 
-      } else {
-        document.getElementById("authenticationStatus").innerHTML = "Please enter both Student ID and Email.";
+        } else {
+          document.getElementById("authenticationStatus").innerHTML = "Please enter both Student ID and Email.";
+        }
       }
-    }
 
-    function authenticate() {
-      let passcode = document.getElementById("passcode").value; // Change 'const' to 'let' here
-
-      // Remove the constant value after testing
-      passcode = 111;
-
-      if (passcode) {
-        // create logic for function!!!
-
-        // Redirect to minting page if authentication successful
+      function createTokenPage() {
         window.location.href = "/createToken"; // Use '/createToken' instead of '/student'
-      } else {
-        document.getElementById("authenticationStatus").innerHTML = "Please enter the passcode.";
+
       }
-    }
 
 
-    function sendEmail(email, passcode) {
-      // Create function to send e-mail
-      //mailchimp?
-    }
+      function sendEmail(email, passcode) {
+        // Create function to send e-mail
+        //mailchimp?
+      }
 
-  </script>
+    </script>
 
 </body>
 

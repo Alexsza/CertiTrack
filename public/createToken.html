@@ -66,38 +66,46 @@
 
 <body>
     <nav class="navbar navbar-expand bg-light navigation-clean navbar-light">
-		<div class="container">
-			<a class="navbar-brand" href="#">CertiTrack</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
+        <div class="container">
+            <a class="navbar-brand" href="#">CertiTrack</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
-						<a class="nav-link" href="index.html">Home </a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="student.html">Student</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="validate.html">Validation</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="admin.html">Admin</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="contact.html">Contact</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html">Home </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="student.html">Student</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="validate.html">Validation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div>
         <h1>Mint the digital Diploma token</h1>
     </div>
+
+    <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
+        id="studentId" placeholder="Enter your StudentID"></div>
+    <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
+        id="passcode" placeholder="Passcode"></div>
+    <div class="col-12 col-md-3"> <button class="btn btn-primary btn-lg"
+        onclick="authenticate()">Authenticate</button></div>
+  </div>
 
     <div id="readArea">
         <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
@@ -116,32 +124,32 @@
         <p id="cidStatus">CID: Not retrieved</p>
         <p id="generatedCID"></p>
     </div>
-        <button onclick="mintToken()">MINT TOKEN</button><br>
+    <button onclick="mintToken()">MINT TOKEN</button><br>
     </div>
-        <footer class="bg-light footer">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 text-center text-lg-start my-auto h-100">
-            <ul class="list-inline mb-2">
-              <li class="list-inline-item"><a href="#">About</a></li>
-              <li class="list-inline-item"><span> </span></li>
-              <li class="list-inline-item"><a href="#">Contact</a></li>
-              <li class="list-inline-item"><span> </span></li>
-              <li class="list-inline-item"><a href="#">Terms of &nbsp;Use</a></li>
-              <li class="list-inline-item"><span> </span></li>
-              <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-            </ul>
-            <p class="text-muted small mb-4 mb-lg-0">© ASzW 2023. All Rights Reserved.</p>
-          </div>
-          <div class="col-lg-6 text-center text-lg-end my-auto h-100">
-            <ul class="list-inline mb-0">
-              <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a></li>
-              <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a></li>
-              <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a></li>
-            </ul>
-          </div>
+    <footer class="bg-light footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 text-center text-lg-start my-auto h-100">
+                    <ul class="list-inline mb-2">
+                        <li class="list-inline-item"><a href="#">About</a></li>
+                        <li class="list-inline-item"><span> </span></li>
+                        <li class="list-inline-item"><a href="#">Contact</a></li>
+                        <li class="list-inline-item"><span> </span></li>
+                        <li class="list-inline-item"><a href="#">Terms of &nbsp;Use</a></li>
+                        <li class="list-inline-item"><span> </span></li>
+                        <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                    </ul>
+                    <p class="text-muted small mb-4 mb-lg-0">© ASzW 2023. All Rights Reserved.</p>
+                </div>
+                <div class="col-lg-6 text-center text-lg-end my-auto h-100">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
     </footer>
 
     <script>
@@ -698,14 +706,17 @@
             document.getElementById("contractArea").innerHTML = "Connected to Contract";
         }
 
-let studentId;
+        let studentId;
         let tokenUri;
 
         const sendStudentId = async () => {
             studentId = document.getElementById("studentIdInput").value;
             if (studentId !== "") {
                 try {
-                    const response = await fetch(`/sendStudentId?studentId=${studentId}`);
+                    const response = await fetch(`/sendStudentId?studentId=${studentId}`, {
+                        method: 'GET', // Specify the HTTP method
+                        headers: {},
+                    });
                     const data = await response.json();
                     if (data.success) {
                         document.getElementById("cidStatus").innerHTML = `CID Retrieved: `;

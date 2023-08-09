@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
-const puppeteer = require('puppeteer');
+const { chromium } = require('playwright')
 const IPFS = require('ipfs-http-client');
 const { MongoClient } = require('mongodb');
 const multer = require('multer');
@@ -28,8 +28,10 @@ async function connect() {
     console.log('Connected to MongoDB');
 
     const database = client.db('certitrackproject');
+
     studentCollection = database.collection('certitrackproject'); // Collection for student data
     cidCollection = database.collection('CIDlist'); // Collection for storing CIDs
+    adminCollection = database.collection('adminSafe'); 
 
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
@@ -41,8 +43,15 @@ async function connect() {
 async function connectMiddleware(req, res, next) {
   try {
     if (!client || (client && !client.topology.isConnected())) {
+      console.log('Attempting to reconnect to MongoDB...');
       await connect(); // Reconnect to MongoDB if not already connected
-      console.log('Reconnected to MongoDB');
+      if (client && client.topology.isConnected()) {
+        console.log('Reconnected to MongoDB');
+      } else {
+        console.log('Failed to reconnect to MongoDB');
+      }
+    } else {
+      console.log('Already connected to MongoDB');
     }
   } catch (error) {
     console.error('Error reconnecting to MongoDB:', error);
@@ -55,8 +64,6 @@ connect();
 let studentId = 0;
 
 
-// app.use(express.static('public'));
-// Set the public folder as static
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -76,6 +83,26 @@ const storageCID = multer.diskStorage({
 });
 
 const uploadCID = multer({ storage: storageCID });
+
+app.post('/admin-signin', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const database = client.db('certitrackproject');
+    const adminCollection = database.collection('adminSafe'); // Collection for admin data
+
+    const admin = await adminCollection.findOne({ user: username, password: password });
+
+    if (admin) {
+      res.json({ success: true, message: 'Admin sign-in successful' });
+    } else {
+      res.json({ success: false, message: 'Admin sign-in failed' });
+    }
+  } catch (error) {
+    console.error('Error during admin sign-in:', error);
+    res.status(500).json({ success: false, message: 'Error during admin sign-in' });
+  }
+});
 
 // Function to handle individual file upload and database insertion
 async function handleDataUpload(req, res) {
@@ -196,9 +223,10 @@ app.get('/sendStudentId', async (req, res) => {
       const tempFilePath = path.join(__dirname, 'uploads', 'template.html');
       fs.writeFileSync(tempFilePath, renderedCertificate);
 
-      // Convert the HTML to PNG using Puppeteer
-      const browser = await puppeteer.launch({ headless: "new" });
-      const page = await browser.newPage();
+      // Convert the HTML to PNG using Playwright
+      const browser = await chromium.launch({ headless: true });
+      const context = await browser.newContext();
+      const page = await context.newPage();
       await page.setContent(renderedCertificate);
       const pngFile = path.join(__dirname, 'uploads', 'certificate.png');
       await page.screenshot({ path: pngFile, fullPage: true });
@@ -253,6 +281,27 @@ app.get('/validateCID', connectMiddleware, async (req, res) => {
   }
 });
 
+//MongoDB 
+app.get('/validateCIDMongoDB', connectMiddleware, async (req, res) => {
+  const cid = req.query.cid;
+
+  try {
+    // Check if the given CID exists in the CIDlist collection of MongoDB
+    const result = await cidCollection.findOne({ cid: cid });
+
+    if (result) {
+      console.log('CID is valid:', cid);
+      res.json({ success: true, message: 'CID is valid', studentId: result.student_id });
+    } else {
+      console.log('Invalid CID:', cid);
+      res.json({ success: false, message: 'Invalid CID' });
+    }
+  } catch (error) {
+    console.error('Error validating CID:', error);
+    res.status(500).json({ success: false, message: 'Error validating CID' });
+  }
+});
+
 
 app.post('/upload', handleDataUpload);
 app.post('/upload-file', upload.single('dataFile'), handleFileUpload);
@@ -286,10 +335,6 @@ app.delete('/deleteDocument/:studentId', async (req, res) => {
   }
 });
 
-
-app.get('/generate-certificate', async (req, res) => {
-  // ... existing code for generating and uploading certificate ...
-});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
