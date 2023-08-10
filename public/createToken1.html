@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <title>Admin</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Raleway:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- needed for smart contract-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+    <style>
+        body {
+            background-color: #eaecec;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 1.5rem;
+            padding: 0.5rem 0rem;
+        }
+
+        #custom-header {
+            background: url('assets/img/digdip.png?t=<%= timestamp %>') no-repeat center center;
+            background-size: cover;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        #custom-header h1 {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            /* Increase letter spacing for a futuristic look */
+            text-transform: uppercase;
+            /* Uppercase text for emphasis */
+        }
+
+        #custom-header span {
+            font-size: 20px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .btn,
+        .btn-upload {
+            background-color: #24285b;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-upload {
+            display: inline-block;
+            /* To match the layout of the button */
+            margin-bottom: 8px;
+            /* Adjust margin if needed */
+        }
+
+        #dataFileLabel {
+            background-color: #24285b;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .connectButton {
+            background-color: #784794;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 1.4rem;
+            font-family: monospace;
+            border-radius: 4px;
+        }
+
+        .connectButton:hover {
+            background-color: #f6851b;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 5px;
+        }
+
+        #connectionStatus,
+        #contractArea,
+        #showNFT {
+            width: 100%;
+            text-align: right;
+        }
+
+        .popup-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+        }
+
+        #addDocumentForm {
+            width: 600px;
+            height: 600px;
+            padding: 20px;
+            background-color: #f5f5dc;
+            /* Light beige background color */
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #addDocumentForm label,
+        #addDocumentForm input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #addDocumentForm label {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        #addDocumentForm input {
+            text-align: left;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand bg-light navigation-clean navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">CertiTrack</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html">Home </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="student.html">Student</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="validate.html">Validation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="custom-header" class="row">
+            <div class="col-12">
+                <h1>Transform you Diploma into a Digital credential</h1>
+                <span>YOu need..
+                     <br> Secure
+                     <br>
+                     Trust and share</span>
+            </div>
+        </div>
+        <div class="py-4 py-xl-5">
+            <div class="row gy-4 gy-md-0">
+                <div class="col-md-3">
+                    <div class="d-flex flex-column align-items-center">
+                        <input type="text" id="studentId" class="form-control mb-2" placeholder="studentId">
+                        <input type="password" id="passcode" class="form-control mb-2" placeholder="Passcode">
+                        <button class="btn btn-primary btn-lg mb-2 connectButton" onclick="signIn()">Sign In</button>
+                        <div id="signIn" class="mb-0"></div>
+                    </div>
+                <div class="col-md-3">
+                    <div class="d-flex flex-column align-items-center">
+                        <button class="btn btn-primary btn-lg mb-2 connectButton" onclick="authenticate()">Authenticate</button>
+                        <div id="authenticate" class="mb-0"></div>
+                    </div>
+                </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex flex-column align-items-center">
+                        <a class="btn btn-primary btn-lg mb-2 connectButton" role="button" href="#"
+                            onclick="connectMetamask()">
+                            <img class="logo"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1024px-MetaMask_Fox.svg.png"
+                                alt="MetaMask Logo">Verify MetaMask
+                        </a>
+                        <p id="connectionStatus" class="mb-0"></p>
+                    </div>
+                </div>
+                <div class="col-md-4"><!-- Each button will have a column width of 4 -->
+                    <div class="d-flex flex-column align-items-center">
+                        <a class="btn btn-primary btn-lg mb-2 connectButton" role="button" href="#"
+                            onclick="connectContract()">Connect to Contract
+                        </a>
+                        <p id="contractArea" class="mb-0"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="secureContent" style="display: none;">
+            <section class="py-5">
+                <div class="row gy-5" style="background-color: white;">
+                    <div class="col-md-4">
+                        <div class="col">
+                            <div class="card border-2 h-100">
+                                <div class="card-body d-flex flex-column justify-content-between p-4" style="border: 2px solid #784794;">
+                                            <div>
+                                                <h6 class=" fw-bold text-muted">Request Diploma Data</h6>
+                                                <ul class="list-unstyled">
+                                                    <li class="d-flex mb-2">
+                                                            <span
+                                                            class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                                fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="icon icon-tabler icon-tabler-circle fs-5 text-primary-emphasis">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                <path d="M5 12l5 5l10 -10"></path>
+                                                            </svg></span>
+                                                            <span>secure</span>
+                                                    </li>
+                                                    <li class="d-flex mb-2"><span
+                                                            class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                                fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="icon icon-tabler icon-tabler-check fs-5 text-primary-emphasis">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                <path d="M5 12l5 5l10 -10"></path>
+                                                            </svg></span><span>Something</span>
+                                                    </li>
+                                                    <li class="d-flex mb-2"><span
+                                                            class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                                fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="icon icon-tabler icon-tabler-check fs-5 text-primary-emphasis">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                <path d="M5 12l5 5l10 -10"></path>
+                                                            </svg></span><span>Something else.</span>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+                                        <button class="btn" id="showFormButton">Show Form</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col">
+                            <div class="card border-2 h-100">
+                                <div class="card-body d-flex flex-column justify-content-between p-4" style="border: 2px solid #784794;">
+                                        <div>
+                                            <h6 class="fw-bold text-muted">Add Multiple Diplomas </h6>
+                                            <ul class="list-unstyled">
+                                                <li class="d-flex mb-2"><span
+                                                        class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                            fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="icon icon-tabler icon-tabler-circle fs-5 text-primary-emphasis">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <path d="M5 12l5 5l10 -10"></path>
+                                                        </svg></span><span>Excel upload only</span></li>
+                                                <li class="d-flex mb-2"><span
+                                                        class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                            fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="icon icon-tabler icon-tabler-check fs-5 text-primary-emphasis">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <path d="M5 12l5 5l10 -10"></path>
+                                                        </svg></span><span>Use database template</span></li>
+                                                <li class="d-flex mb-2"><span
+                                                        class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                            fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="icon icon-tabler icon-tabler-check fs-5 text-primary-emphasis">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <path d="M5 12l5 5l10 -10"></path>
+                                                        </svg></span><span>Upload only once</span></li>
+                                            </ul>
+                                        </div>
+                                        <label class="btn" style="padding: 8px 5px;  margin-bottom: 0px;"
+                                            for="dataFile">Upload File</label>
+                                        <input type="file" id="dataFile" style="display: none;"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col">
+                            <div class="card border-2 h-100">
+                                <div class="card-body d-flex flex-column justify-content-between p-4" style="border: 2px solid #784794;">
+                                        <div>
+                                            <h6 class="fw-bold text-muted">Delete a single Diploma </h6>
+                                            <ul class="list-unstyled">
+                                                <label for="studentIdInput">Enter Student ID: <br>
+                                                (Do not include the x) </label>
+                                                <input type="text" id="studentIdInput" minlength="8" maxlength="8" pattern="\d{8}">
+                                            </ul>
+                                        </div>
+                                        <button class="btn" onclick="deleteDocument()">Delete Document</button>
+                                    </div>
+                            </div>
+                        <div class="col"></div>
+                    </div>
+                </div>
+            </section>       
+        </div>
+    </div>
+    <div id="message" class="text-center" style="font-size: larger; font-weight: bold;"></div>
+    
+
+    <footer class="bg-light footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 text-center text-lg-start my-auto h-100">
+                    <ul class="list-inline mb-2">
+                        <li class="list-inline-item"><a href="#">About</a></li>
+                        <li class="list-inline-item"><span> </span></li>
+                        <li class="list-inline-item"><a href="#">Contact</a></li>
+                        <li class="list-inline-item"><span> </span></li>
+                        <li class="list-inline-item"><a href="#">Terms of &nbsp;Use</a></li>
+                        <li class="list-inline-item"><span> </span></li>
+                        <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                    </ul>
+                    <p class="text-muted small mb-4 mb-lg-0">© ASzW 2023. All Rights Reserved.</p>
+                </div>
+                <div class="col-lg-6 text-center text-lg-end my-auto h-100">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        let account;
+        let isSignedIn = false;
+        let isMetaMaskConnected = false;
+        let isContractConnected = false;
+
+        const connectMetamask = async () => {
+            if (window.ethereum !== "undefined") {
+                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                account = accounts[0];
+                isMetaMaskConnected = true;
+                checkAndShowSecureContent();
+
+                const tickImageUrl = "https://static-00.iconduck.com/assets.00/success-icon-512x512-qdg1isa0.png";
+                const connectionStatusElement = document.getElementById("connectionStatus");
+                connectionStatusElement.innerHTML = `Connected to Crypto Wallet <img src="${tickImageUrl}" alt="Tick" width="40" height="40">`;
+                
+
+            }
+        };
+
+        const connectContract = async () => {
+            const ABI = [
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_owner",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_approved",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "Approval",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_owner",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_operator",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "bool",
+                            "name": "_approved",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "ApprovalForAll",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "string",
+                            "name": "_uri",
+                            "type": "string"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "_mintTimestamp",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "MintEvent",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "previousOwner",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "newOwner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "OwnershipTransferred",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_from",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "Transfer",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_from",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "_transferTimestamp",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "TransferEvent",
+                    "type": "event"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_approved",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "approve",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "_uri",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_transferTimestamp",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "mint",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_from",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "safeTransferFrom",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_from",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "bytes",
+                            "name": "_data",
+                            "type": "bytes"
+                        }
+                    ],
+                    "name": "safeTransferFrom",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_operator",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "bool",
+                            "name": "_approved",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "setApprovalForAll",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "transfer",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_from",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "transferFrom",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_newOwner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "transferOwnership",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "constructor"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_owner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "balanceOf",
+                    "outputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
+                    "outputs": [
+                        {
+                            "internalType": "string",
+                            "name": "",
+                            "type": "string"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "getApproved",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "getTokenTransferTimestamp",
+                    "outputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_owner",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "_operator",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "isApprovedForAll",
+                    "outputs": [
+                        {
+                            "internalType": "bool",
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "name",
+                    "outputs": [
+                        {
+                            "internalType": "string",
+                            "name": "_name",
+                            "type": "string"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "NOT_CURRENT_OWNER",
+                    "outputs": [
+                        {
+                            "internalType": "string",
+                            "name": "",
+                            "type": "string"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "owner",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "ownerOf",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "_owner",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "bytes4",
+                            "name": "_interfaceID",
+                            "type": "bytes4"
+                        }
+                    ],
+                    "name": "supportsInterface",
+                    "outputs": [
+                        {
+                            "internalType": "bool",
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "symbol",
+                    "outputs": [
+                        {
+                            "internalType": "string",
+                            "name": "_symbol",
+                            "type": "string"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "_tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "tokenURI",
+                    "outputs": [
+                        {
+                            "internalType": "string",
+                            "name": "",
+                            "type": "string"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ];
+            const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a";
+            window.web3 = await new Web3(window.ethereum);
+            window.contract = await new window.web3.eth.Contract(ABI, Address);
+            isContractConnected = true;
+            checkAndShowSecureContent();
+
+            const tickImage = "https://static-00.iconduck.com/assets.00/success-icon-512x512-qdg1isa0.png";
+            const contractConnectElement = document.getElementById("contractArea");
+            contractConnectElement.innerHTML = `Connected to Smart Contract <img src="${tickImage}" alt="Tick" width="40" height="40">`;
+            
+        }
+
+        const getContractAccount = async () => {
+            const data = await window.contract.methods.getAddress().call();
+            document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
+        }
+
+        
+        async function signIn() {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const messageDiv = document.getElementById('signIn');
+
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            try {
+                const response = await fetch('/admin-signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    messageDiv.textContent = 'Admin sign-in successful';
+                    messageDiv.style.color = 'green';
+                    isSignedIn = true;
+                    checkAndShowSecureContent();
+                } else {
+                    messageDiv.textContent = 'Admin sign-in failed';
+                    messageDiv.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error during admin sign-in:', error);
+                messageDiv.textContent = 'An error occurred during admin sign-in';
+                messageDiv.style.color = 'red';
+            } finally {
+        // Clear the input field after processing is complete
+        usernameInput.value = '';
+    }
+}
+    
+        async function checkAndShowSecureContent() {
+            if (isSignedIn && isMetaMaskConnected && isContractConnected) {
+                const secureContent = document.getElementById('secureContent');
+                secureContent.style.display = 'block'; // Set display to 'block' to show the content
+            }
+        }
+
+        
+        const addDocumentForm = document.getElementById('addDocumentForm');
+        const uploadFileButton = document.getElementById('uploadFileButton');
+        const messageDiv = document.getElementById('message');
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const showFormButton = document.getElementById("showFormButton");
+            const closePopupButton = document.getElementById("closePopupButton");
+            const addDocumentPopup = document.getElementById("addDocumentPopup");
+            const popupOverlay = document.getElementById("popupOverlay");
+            const addDiplomaButton = document.getElementById("addDiplomaButton");
+            const addDocumentForm = document.getElementById("addDocumentForm");
+            const messageDiv = document.getElementById('message');
+
+            showFormButton.addEventListener("click", function () {
+                addDocumentPopup.style.display = "block";
+                popupOverlay.style.display = "block";
+            });
+
+            closePopupButton.addEventListener("click", function () {
+                addDocumentPopup.style.display = "none";
+                popupOverlay.style.display = "none";
+            });
+
+            addDocumentForm.addEventListener("submit", async function (event) {
+                event.preventDefault(); // Prevent the default form submission behavior
+
+                const formData = new FormData(addDocumentForm);
+
+                const newDocument = {
+                    student_id: parseInt(formData.get('student_id')),
+                    first_name: formData.get('first_name'),
+                    last_name: formData.get('last_name'),
+                    course: formData.get('course'),
+                    grade: parseInt(formData.get('grade')),
+                    awardDate: formData.get('awardDate'),
+                };
+
+                try {
+                    const response = await fetch('/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(newDocument),
+                    });
+
+                    const data = await response.json();
+                    console.log(data);
+
+                    if (data.success) {
+                        // Show success message
+                        messageDiv.textContent = 'Diploma successfully added!';
+                        messageDiv.style.color = 'green';
+                    } else {
+                        // Show error message
+                        messageDiv.textContent = 'Error adding document. Please try again.';
+                        messageDiv.style.color = 'red';
+                    }
+                } catch (error) {
+                    console.error('Error adding document:', error);
+                    // Show error message
+                    messageDiv.textContent = 'Error adding document. Please try again.';
+                    messageDiv.style.color = 'red';
+                }
+            });
+        });
+
+        // Function to handle file upload and database insertion from Excel file
+        async function handleFileUpload(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+
+            console.log('Selected file:');
+            console.log(file);
+
+            const formData = new FormData();
+            formData.append('dataFile', file);
+
+            try {
+                const response = await fetch('/upload-file', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+                console.log('Response from server:');
+                console.log(data);
+
+                if (data.success) {
+                    // Show success message
+                    messageDiv.textContent = 'Data uploaded and inserted into MongoDB!';
+                    messageDiv.style.color = 'green';
+                } else {
+                    // Show error message
+                    messageDiv.textContent = 'Error uploading data. Please try again.';
+                    messageDiv.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error uploading data:', error);
+                // Show error message
+                messageDiv.textContent = 'Error uploading data. Please try again.';
+                messageDiv.style.color = 'red';
+            }
+        }
+
+        const fileInput = document.getElementById('dataFile');
+        fileInput.addEventListener('change', handleFileUpload);
+
+        const form = document.getElementById('deleteDocumentForm');
+        const errorContainer = document.getElementById('errorContainer');
+        const input = document.getElementById('studentIdInput');
+
+        input.addEventListener('input', () => {
+            if (!input.checkValidity()) {
+                errorContainer.textContent = 'Invalid input. Student ID must be exactly 8 numeric digits.';
+            } else {
+                errorContainer.textContent = '';
+            }
+        });
+
+        function deleteDocument() {
+            if (!input.checkValidity()) {
+                alert('Invalid input. Student ID must be exactly 8 numeric digits.');
+                return false;
+            }
+
+            const studentId = input.value;
+            const messageDiv = document.getElementById('message');
+
+            fetch(`/deleteDocument/${studentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        messageDiv.textContent = 'Diploma successfully removed from MongoDB!';
+                        messageDiv.style.color = 'green';
+                        // Remove the corresponding element from the UI
+                        const documentElement = document.getElementById(`document-${studentId}`);
+                        if (documentElement) {
+
+                            documentElement.remove();
+
+
+                        }
+                    } else {
+                        messageDiv.textContent = 'Error removing Diploma. Ensure student ID exists in Database'; // Update error message
+                        messageDiv.style.color = 'red';
+                    }
+                })
+                .catch(error => {
+            console.error('Error deleting document:', error);
+            // Handle error case
+            messageDiv.textContent = 'An error occurred while deleting the document.'; // Display a general error message
+            messageDiv.style.color = 'red';
+        })
+        .finally(() => {
+            // Clear the input field after processing is complete
+            studentIdInput.value = '';
+        });
+}
+        
+    </script>
+</body>
+
+</html>

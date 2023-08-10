@@ -6,13 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server",
-    "build": "npm install"
+    "install-deps": "npm install",
+    "install-ipfs": "npm install --save ipfs-http-client",
+    "install-dev-deps": "npm install --save-dev ipfs-http-client"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "16.14.1"
+  },
   "dependencies": {
-    "axios": "^1.4.0",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "form-data": "^4.0.0",
@@ -22,11 +26,8 @@
     "ipfs-api": "^17.5.0",
     "ipfs-http-client": "^50.1.2",
     "mongodb": "^5.7.0",
-    "mongoose": "^7.3.2",
     "multer": "^1.4.5-lts.1",
-    "mysql": "^2.18.1",
     "playwright": "^1.36.2",
-    "puppeteer": "^20.9.0",
     "xlsx": "^0.18.5"
   }
 }
