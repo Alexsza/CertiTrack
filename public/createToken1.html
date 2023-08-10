@@ -1,164 +1,67 @@
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="en">
+<html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta charset="utf-8">
-    <title>Admin</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Raleway:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <!-- needed for smart contract-->
+    <title>Minting</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+
     <style>
         body {
-            background-color: #eaecec;
+            background-color: rgb(237, 235, 235);
+            font-family: tahoma;
+            font-size: 33px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .navbar-nav .nav-link {
-            font-size: 1.5rem;
-            padding: 0.5rem 0rem;
+        button {
+            background-color: rgb(181, 157, 2);
+            font-size: 33px;
+            padding: 5px;
+            font-family: Impact;
         }
 
-        #custom-header {
-            background: url('assets/img/digdip.png?t=<%= timestamp %>') no-repeat center center;
-            background-size: cover;
-            color: white;
-            padding: 30px 20px;
+        input {
+            width: 25vw;
+            height: 30px;
+            font-size: 25px;
+            font-family: tahoma;
+            outline: none;
+        }
+
+        #readArea {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #writeArea {
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: rgb(239, 236, 73);
+        }
+
+        h1 {
             text-align: center;
-            position: relative;
-        }
-
-        #custom-header h1 {
-            font-size: 36px;
+            font-size: 60px;
             font-weight: bold;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            /* Increase letter spacing for a futuristic look */
-            text-transform: uppercase;
-            /* Uppercase text for emphasis */
         }
 
-        #custom-header span {
-            font-size: 20px;
-            display: block;
-            margin-top: 10px;
-        }
-
-        .btn,
-        .btn-upload {
-            background-color: #24285b;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-upload {
-            display: inline-block;
-            /* To match the layout of the button */
-            margin-bottom: 8px;
-            /* Adjust margin if needed */
-        }
-
-        #dataFileLabel {
-            background-color: #24285b;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .connectButton {
-            background-color: #784794;
-            width: 100%;
-            height: 50px;
+        #cidContainer {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 10px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            color: white;
-            font-size: 1.4rem;
-            font-family: monospace;
-            border-radius: 4px;
+            flex-wrap: wrap;
         }
 
-        .connectButton:hover {
-            background-color: #f6851b;
-        }
-
-        .logo {
-            width: 40px;
-            height: 40px;
-            margin-right: 5px;
-        }
-
-        #connectionStatus,
-        #contractArea,
-        #showNFT {
-            width: 100%;
-            text-align: right;
-        }
-
-        .popup-container {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 900;
-        }
-
-        #addDocumentForm {
-            width: 600px;
-            height: 600px;
-            padding: 20px;
-            background-color: #f5f5dc;
-            /* Light beige background color */
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        #addDocumentForm label,
-        #addDocumentForm input {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        #addDocumentForm label {
-            text-align: left;
-            font-weight: bold;
-        }
-
-        #addDocumentForm input {
-            text-align: left;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        #cidStatusContainer {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
         }
     </style>
-
 </head>
 
 <body>
@@ -192,171 +95,37 @@
         </div>
     </nav>
 
-    <div class="container">
-        <div id="custom-header" class="row">
-            <div class="col-12">
-                <h1>Transform you Diploma into a Digital credential</h1>
-                <span>YOu need..
-                     <br> Secure
-                     <br>
-                     Trust and share</span>
-            </div>
-        </div>
-        <div class="py-4 py-xl-5">
-            <div class="row gy-4 gy-md-0">
-                <div class="col-md-3">
-                    <div class="d-flex flex-column align-items-center">
-                        <input type="text" id="studentId" class="form-control mb-2" placeholder="studentId">
-                        <input type="password" id="passcode" class="form-control mb-2" placeholder="Passcode">
-                        <button class="btn btn-primary btn-lg mb-2 connectButton" onclick="signIn()">Sign In</button>
-                        <div id="signIn" class="mb-0"></div>
-                    </div>
-                <div class="col-md-3">
-                    <div class="d-flex flex-column align-items-center">
-                        <button class="btn btn-primary btn-lg mb-2 connectButton" onclick="authenticate()">Authenticate</button>
-                        <div id="authenticate" class="mb-0"></div>
-                    </div>
-                </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="d-flex flex-column align-items-center">
-                        <a class="btn btn-primary btn-lg mb-2 connectButton" role="button" href="#"
-                            onclick="connectMetamask()">
-                            <img class="logo"
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1024px-MetaMask_Fox.svg.png"
-                                alt="MetaMask Logo">Verify MetaMask
-                        </a>
-                        <p id="connectionStatus" class="mb-0"></p>
-                    </div>
-                </div>
-                <div class="col-md-4"><!-- Each button will have a column width of 4 -->
-                    <div class="d-flex flex-column align-items-center">
-                        <a class="btn btn-primary btn-lg mb-2 connectButton" role="button" href="#"
-                            onclick="connectContract()">Connect to Contract
-                        </a>
-                        <p id="contractArea" class="mb-0"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="secureContent" style="display: none;">
-            <section class="py-5">
-                <div class="row gy-5" style="background-color: white;">
-                    <div class="col-md-4">
-                        <div class="col">
-                            <div class="card border-2 h-100">
-                                <div class="card-body d-flex flex-column justify-content-between p-4" style="border: 2px solid #784794;">
-                                            <div>
-                                                <h6 class=" fw-bold text-muted">Request Diploma Data</h6>
-                                                <ul class="list-unstyled">
-                                                    <li class="d-flex mb-2">
-                                                            <span
-                                                            class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
-                                                                xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                                fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="icon icon-tabler icon-tabler-circle fs-5 text-primary-emphasis">
-                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                <path d="M5 12l5 5l10 -10"></path>
-                                                            </svg></span>
-                                                            <span>secure</span>
-                                                    </li>
-                                                    <li class="d-flex mb-2"><span
-                                                            class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
-                                                                xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                                fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="icon icon-tabler icon-tabler-check fs-5 text-primary-emphasis">
-                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                <path d="M5 12l5 5l10 -10"></path>
-                                                            </svg></span><span>Something</span>
-                                                    </li>
-                                                    <li class="d-flex mb-2"><span
-                                                            class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
-                                                                xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                                fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="icon icon-tabler icon-tabler-check fs-5 text-primary-emphasis">
-                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                <path d="M5 12l5 5l10 -10"></path>
-                                                            </svg></span><span>Something else.</span>
-                                                    </li>
-                                                </ul>
-
-                                            </div>
-                                        <button class="btn" id="showFormButton">Show Form</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="col">
-                            <div class="card border-2 h-100">
-                                <div class="card-body d-flex flex-column justify-content-between p-4" style="border: 2px solid #784794;">
-                                        <div>
-                                            <h6 class="fw-bold text-muted">Add Multiple Diplomas </h6>
-                                            <ul class="list-unstyled">
-                                                <li class="d-flex mb-2"><span
-                                                        class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
-                                                            xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                            fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                                            class="icon icon-tabler icon-tabler-circle fs-5 text-primary-emphasis">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                            <path d="M5 12l5 5l10 -10"></path>
-                                                        </svg></span><span>Excel upload only</span></li>
-                                                <li class="d-flex mb-2"><span
-                                                        class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
-                                                            xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                            fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                                            class="icon icon-tabler icon-tabler-check fs-5 text-primary-emphasis">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                            <path d="M5 12l5 5l10 -10"></path>
-                                                        </svg></span><span>Use database template</span></li>
-                                                <li class="d-flex mb-2"><span
-                                                        class="bs-icon-xs bs-icon-rounded bs-icon me-2"><svg
-                                                            xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                            fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                                            class="icon icon-tabler icon-tabler-check fs-5 text-primary-emphasis">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                            <path d="M5 12l5 5l10 -10"></path>
-                                                        </svg></span><span>Upload only once</span></li>
-                                            </ul>
-                                        </div>
-                                        <label class="btn" style="padding: 8px 5px;  margin-bottom: 0px;"
-                                            for="dataFile">Upload File</label>
-                                        <input type="file" id="dataFile" style="display: none;"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="col">
-                            <div class="card border-2 h-100">
-                                <div class="card-body d-flex flex-column justify-content-between p-4" style="border: 2px solid #784794;">
-                                        <div>
-                                            <h6 class="fw-bold text-muted">Delete a single Diploma </h6>
-                                            <ul class="list-unstyled">
-                                                <label for="studentIdInput">Enter Student ID: <br>
-                                                (Do not include the x) </label>
-                                                <input type="text" id="studentIdInput" minlength="8" maxlength="8" pattern="\d{8}">
-                                            </ul>
-                                        </div>
-                                        <button class="btn" onclick="deleteDocument()">Delete Document</button>
-                                    </div>
-                            </div>
-                        <div class="col"></div>
-                    </div>
-                </div>
-            </section>       
-        </div>
+    <div>
+        <h1>Mint the digital Diploma token</h1>
     </div>
-    <div id="message" class="text-center" style="font-size: larger; font-weight: bold;"></div>
-    
 
+    <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
+        id="studentId" placeholder="Enter your StudentID"></div>
+    <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text"
+        id="passcode" placeholder="Passcode"></div>
+    <div class="col-12 col-md-3"> <button class="btn btn-primary btn-lg"
+        onclick="authenticate()">Authenticate</button></div>
+  </div>
+
+    <div id="readArea">
+        <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
+        <p id="userArea">Status: Not connected to Metamask</p>
+
+        <button onclick="connectContract()">CONNECT TO CONTRACT</button>
+        <p id="contractArea">Status: Not connected to Contract</p>
+    </div>
+    <div>
+        <label for="studentIdInput">Student ID:</label>
+        <input type="text" id="studentIdInput" placeholder="Enter Student ID">
+        <button id="sendButton" onclick="sendStudentId()">Send Student Id</button>
+    </div>
+
+    <div id="cidStatusContainer">
+        <p id="cidStatus">CID: Not retrieved</p>
+        <p id="generatedCID"></p>
+    </div>
+    <button onclick="mintToken()">MINT TOKEN</button><br>
+    </div>
     <footer class="bg-light footer">
         <div class="container">
             <div class="row">
@@ -374,37 +143,25 @@
                 </div>
                 <div class="col-lg-6 text-center text-lg-end my-auto h-100">
                     <ul class="list-inline mb-0">
-                        <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a>
-                        </li>
-                        <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a>
-                        </li>
-                        <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a>
-                        </li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-facebook fa-2x fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-twitter fa-2x fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fa fa-instagram fa-2x fa-fw"></i></a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
-    <script>
-        let account;
-        let isSignedIn = false;
-        let isMetaMaskConnected = false;
-        let isContractConnected = false;
 
+    <script>
+
+        let account;
         const connectMetamask = async () => {
             if (window.ethereum !== "undefined") {
                 const accounts = await ethereum.request({ method: "eth_requestAccounts" });
                 account = accounts[0];
-                isMetaMaskConnected = true;
-                checkAndShowSecureContent();
-
-                const tickImageUrl = "https://static-00.iconduck.com/assets.00/success-icon-512x512-qdg1isa0.png";
-                const connectionStatusElement = document.getElementById("connectionStatus");
-                connectionStatusElement.innerHTML = `Connected to Crypto Wallet <img src="${tickImageUrl}" alt="Tick" width="40" height="40">`;
-                
-
+                document.getElementById("userArea").innerHTML = `User Account: ${account}`;
             }
-        };
+        }
 
         const connectContract = async () => {
             const ABI = [
@@ -941,237 +698,65 @@
                     "stateMutability": "view",
                     "type": "function"
                 }
-            ];
+            ]
+                ;
             const Address = "0x27ade3b90a192f3b3969a13c6eae87d03541001a";
             window.web3 = await new Web3(window.ethereum);
             window.contract = await new window.web3.eth.Contract(ABI, Address);
-            isContractConnected = true;
-            checkAndShowSecureContent();
-
-            const tickImage = "https://static-00.iconduck.com/assets.00/success-icon-512x512-qdg1isa0.png";
-            const contractConnectElement = document.getElementById("contractArea");
-            contractConnectElement.innerHTML = `Connected to Smart Contract <img src="${tickImage}" alt="Tick" width="40" height="40">`;
-            
+            document.getElementById("contractArea").innerHTML = "Connected to Contract";
         }
 
-        const getContractAccount = async () => {
-            const data = await window.contract.methods.getAddress().call();
-            document.getElementById("contractAccount").innerHTML = `Contract Account: ${data}`;
-        }
+        let studentId;
+        let tokenUri;
 
-        
-        async function signIn() {
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-            const messageDiv = document.getElementById('signIn');
-
-            const username = usernameInput.value;
-            const password = passwordInput.value;
-
-            try {
-                const response = await fetch('/admin-signin', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password }),
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    messageDiv.textContent = 'Admin sign-in successful';
-                    messageDiv.style.color = 'green';
-                    isSignedIn = true;
-                    checkAndShowSecureContent();
-                } else {
-                    messageDiv.textContent = 'Admin sign-in failed';
-                    messageDiv.style.color = 'red';
-                }
-            } catch (error) {
-                console.error('Error during admin sign-in:', error);
-                messageDiv.textContent = 'An error occurred during admin sign-in';
-                messageDiv.style.color = 'red';
-            } finally {
-        // Clear the input field after processing is complete
-        usernameInput.value = '';
-    }
-}
-    
-        async function checkAndShowSecureContent() {
-            if (isSignedIn && isMetaMaskConnected && isContractConnected) {
-                const secureContent = document.getElementById('secureContent');
-                secureContent.style.display = 'block'; // Set display to 'block' to show the content
-            }
-        }
-
-        
-        const addDocumentForm = document.getElementById('addDocumentForm');
-        const uploadFileButton = document.getElementById('uploadFileButton');
-        const messageDiv = document.getElementById('message');
-
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const showFormButton = document.getElementById("showFormButton");
-            const closePopupButton = document.getElementById("closePopupButton");
-            const addDocumentPopup = document.getElementById("addDocumentPopup");
-            const popupOverlay = document.getElementById("popupOverlay");
-            const addDiplomaButton = document.getElementById("addDiplomaButton");
-            const addDocumentForm = document.getElementById("addDocumentForm");
-            const messageDiv = document.getElementById('message');
-
-            showFormButton.addEventListener("click", function () {
-                addDocumentPopup.style.display = "block";
-                popupOverlay.style.display = "block";
-            });
-
-            closePopupButton.addEventListener("click", function () {
-                addDocumentPopup.style.display = "none";
-                popupOverlay.style.display = "none";
-            });
-
-            addDocumentForm.addEventListener("submit", async function (event) {
-                event.preventDefault(); // Prevent the default form submission behavior
-
-                const formData = new FormData(addDocumentForm);
-
-                const newDocument = {
-                    student_id: parseInt(formData.get('student_id')),
-                    first_name: formData.get('first_name'),
-                    last_name: formData.get('last_name'),
-                    course: formData.get('course'),
-                    grade: parseInt(formData.get('grade')),
-                    awardDate: formData.get('awardDate'),
-                };
-
+        const sendStudentId = async () => {
+            studentId = document.getElementById("studentIdInput").value;
+            if (studentId !== "") {
                 try {
-                    const response = await fetch('/upload', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(newDocument),
+                    const response = await fetch(`/sendStudentId?studentId=${studentId}`, {
+                        method: 'GET', // Specify the HTTP method
+                        headers: {},
                     });
-
                     const data = await response.json();
-                    console.log(data);
-
                     if (data.success) {
-                        // Show success message
-                        messageDiv.textContent = 'Diploma successfully added!';
-                        messageDiv.style.color = 'green';
+                        document.getElementById("cidStatus").innerHTML = `CID Retrieved: `;
+                        tokenUri = `https://gateway.ipfs.io/ipfs/${data.cid}`;
+                        document.getElementById("generatedCID").innerHTML = tokenUri;
                     } else {
-                        // Show error message
-                        messageDiv.textContent = 'Error adding document. Please try again.';
-                        messageDiv.style.color = 'red';
+                        console.error(data.error);
+                        alert('Error generating the certificate. Please try again.');
                     }
                 } catch (error) {
-                    console.error('Error adding document:', error);
-                    // Show error message
-                    messageDiv.textContent = 'Error adding document. Please try again.';
-                    messageDiv.style.color = 'red';
+                    console.error('Error sending student ID:', error);
+                    alert("Error sending student ID. Please try again.");
                 }
-            });
-        });
+            } else {
+                alert("Please enter a valid student ID.");
+            }
+        };
 
-        // Function to handle file upload and database insertion from Excel file
-        async function handleFileUpload(event) {
-            const fileInput = event.target;
-            const file = fileInput.files[0];
-
-            console.log('Selected file:');
-            console.log(file);
-
-            const formData = new FormData();
-            formData.append('dataFile', file);
-
+        const mintToken = async () => {
             try {
-                const response = await fetch('/upload-file', {
-                    method: 'POST',
-                    body: formData,
-                });
+                const addressInput = account;
+                console.log(addressInput);
+                console.log(studentId);
+                console.log(tokenUri);
 
-                const data = await response.json();
-                console.log('Response from server:');
-                console.log(data);
+                if (addressInput && studentId && tokenUri) {
+                    const address = addressInput;
+                    const tokenId = studentId;
+                    const transferTimestamp = Math.floor(Date.now() / 1000);
 
-                if (data.success) {
-                    // Show success message
-                    messageDiv.textContent = 'Data uploaded and inserted into MongoDB!';
-                    messageDiv.style.color = 'green';
+                    await contract.methods.mint(address, tokenId, tokenUri, transferTimestamp).send({ from: account });
+                    alert("Token minted successfully!");
                 } else {
-                    // Show error message
-                    messageDiv.textContent = 'Error uploading data. Please try again.';
-                    messageDiv.style.color = 'red';
+                    alert("Please enter all minting details!");
                 }
             } catch (error) {
-                console.error('Error uploading data:', error);
-                // Show error message
-                messageDiv.textContent = 'Error uploading data. Please try again.';
-                messageDiv.style.color = 'red';
+                alert("Error occurred while minting token: " + error);
             }
-        }
+        };
 
-        const fileInput = document.getElementById('dataFile');
-        fileInput.addEventListener('change', handleFileUpload);
-
-        const form = document.getElementById('deleteDocumentForm');
-        const errorContainer = document.getElementById('errorContainer');
-        const input = document.getElementById('studentIdInput');
-
-        input.addEventListener('input', () => {
-            if (!input.checkValidity()) {
-                errorContainer.textContent = 'Invalid input. Student ID must be exactly 8 numeric digits.';
-            } else {
-                errorContainer.textContent = '';
-            }
-        });
-
-        function deleteDocument() {
-            if (!input.checkValidity()) {
-                alert('Invalid input. Student ID must be exactly 8 numeric digits.');
-                return false;
-            }
-
-            const studentId = input.value;
-            const messageDiv = document.getElementById('message');
-
-            fetch(`/deleteDocument/${studentId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        messageDiv.textContent = 'Diploma successfully removed from MongoDB!';
-                        messageDiv.style.color = 'green';
-                        // Remove the corresponding element from the UI
-                        const documentElement = document.getElementById(`document-${studentId}`);
-                        if (documentElement) {
-
-                            documentElement.remove();
-
-
-                        }
-                    } else {
-                        messageDiv.textContent = 'Error removing Diploma. Ensure student ID exists in Database'; // Update error message
-                        messageDiv.style.color = 'red';
-                    }
-                })
-                .catch(error => {
-            console.error('Error deleting document:', error);
-            // Handle error case
-            messageDiv.textContent = 'An error occurred while deleting the document.'; // Display a general error message
-            messageDiv.style.color = 'red';
-        })
-        .finally(() => {
-            // Clear the input field after processing is complete
-            studentIdInput.value = '';
-        });
-}
-        
     </script>
 </body>
 
